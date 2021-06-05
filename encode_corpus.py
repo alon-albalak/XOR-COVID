@@ -14,7 +14,7 @@ from data_classes.dr_datasets import EncodingDataset, encoding_collate
 from utils.torch_utils import move_to_cuda, AverageMeter, load_saved
 from config import encode_args
 from functools import partial
-import apex
+# import apex
 
 def main():
     args = encode_args()
@@ -22,8 +22,8 @@ def main():
     if args.sparse:
         from scipy.sparse import csr_matrix, vstack, save_npz
 
-    if args.fp16:
-        apex.amp.register_half_function(torch, 'einsum')
+    # if args.fp16:
+    #     apex.amp.register_half_function(torch, 'einsum')
 
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s - %(message)s', datefmt='%m/%d/%Y %H:%M:%S',
                         level=logging.INFO,
@@ -71,8 +71,8 @@ def main():
 
     model.to(device)
 
-    if args.fp16:
-        model = apex.amp.initialize(model, opt_level=args.fp16_opt_level)
+    # if args.fp16:
+    #     model = apex.amp.initialize(model, opt_level=args.fp16_opt_level)
 
     if n_gpu > 1:
         model = torch.nn.DataParallel(model)

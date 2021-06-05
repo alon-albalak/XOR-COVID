@@ -4,14 +4,14 @@ This repository contains the source code for an end-to-end open-domain question 
 
 
 ## Installation
-Our system uses PubMedBERT, a neural language model that is pretrained on PubMed abstracts for the retriever. Download PubMedBert [here](https://huggingface.co/microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract/tree/main). 
+Our system uses PubMedBERT, a neural language model that is pretrained on PubMed abstracts for the retriever. Download the PyTorch version of PubMedBert [here](https://huggingface.co/microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract/tree/main). 
 For reading comprehension, we utilize BioBERT fine-tuned on SQuAD V2 . The model can be found [here](https://huggingface.co/ktrapeznikov/biobert_v1.1_pubmed_squad_v2).
 
 
 ## Datasets
 We provide the [COVID-QA](https://www.aclweb.org/anthology/2020.nlpcovid19-acl.18.pdf) dataset under the data directory. This is used for both the retriever and reading models. The train/dev/test files for the retriever are named dense_\*.txt and those for reading comprehension are named qa_\*.json.
 
-The CORD-19 dataset is available for download [here](https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases.html). Our system requires download of both the document_parses and metadata files for complete article information. This must be combined into a jsonl file where each line contains a json object with:
+The CORD-19 dataset is available for download [here](https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases.html). Our system requires download of both the document_parses and metadata files for complete article information. For our system we use the 2021-02-15 download but any other download can also work. This must be combined into a jsonl file where each line contains a json object with:
   * id: article PMC id
   * title: article title
   * text: article text
@@ -20,7 +20,12 @@ The CORD-19 dataset is available for download [here](https://ai2-semanticscholar
   * journal: journal published
   * authors: author list
 
-We split each article into multiple json entries based on paragraph text cutoff in the document_parses file. Paragraphs that are longer than 200 tokens are split futher.
+We split each article into multiple json entries based on paragraph text cutoff in the document_parses file. Paragraphs that are longer than 200 tokens are split futher. This can be done with ```splitCORD.py``` where
+```
+* metdata-file: the metadata downloaded for CORD
+* pmc-path: path to the PMC articles downloaded for CORD
+* out-path: output jsonl file
+```
 
 ## Dense Retrieval Model
 Once we have our model (PubMedBERT), we can start training. More specifically during training, we use positive and negative paragraphs, positive being paragraphs that contain the answer to a question, and negative ones not. We train on the COVID-QA dataset (see the Datasets section for more information on COVID-QA). We have a unified encoder for both questions and text paragraphs that learns to encode questions and associated texts into similar vectors. Afterwards, we use the model to encode the CORD-19 corpus.
