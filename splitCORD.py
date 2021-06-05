@@ -3,6 +3,7 @@ import os
 import nltk
 import csv
 import argparse
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--metadata-file', type=str)
@@ -31,9 +32,7 @@ counter = 0
 
 dumpFile = open(dumpPath, 'w')
 
-for filename in os.listdir(path):
-    if count % 1000 == 0:
-        print(count)
+for filename in tqdm(os.listdir(path)):
     count += 1
     f = open(path+'/'+filename,'r')
     data = json.load(f)
@@ -68,6 +67,5 @@ for filename in os.listdir(path):
                      "journal": metadata[data['paper_id']]['journal'],"authors": metadata[data['paper_id']]['authors']}
             json.dump(entry, dumpFile)
             dumpFile.write('\n')
-            counter += 1
 
 dumpFile.close()
