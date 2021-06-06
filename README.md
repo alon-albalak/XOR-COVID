@@ -27,6 +27,11 @@ We split each article into multiple json entries based on paragraph text cutoff 
 * out-path: output jsonl file
 ```
 
+To download and process the data, use:
+```bash
+bash get_prepare_CORD.sh
+```
+
 ## Dense Retrieval Model
 Once we have our model (PubMedBERT), we can start training. More specifically during training, we use positive and negative paragraphs, positive being paragraphs that contain the answer to a question, and negative ones not. We train on the COVID-QA dataset (see the Datasets section for more information on COVID-QA). We have a unified encoder for both questions and text paragraphs that learns to encode questions and associated texts into similar vectors. Afterwards, we use the model to encode the CORD-19 corpus.
 ### Training
@@ -48,7 +53,6 @@ CUDA_VISIBLE_DEVICES=0 python ../train_retrieval.py \
     --max_q_len 30 \
     --warmup_ratio 0.1 \
     --num_train_epochs 20 \
-    --dense_only \
     --output_dir /path/to/model/output \
 ```
 
