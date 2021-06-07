@@ -15,5 +15,4 @@ CUDA_VISIBLE_DEVICES=0 python ../train_retrieval.py \
     --max_c_len 300 \
     --max_q_len 30 \
     --num_train_epochs 20 \
-    --dense_only \
     --output_dir /path/to/model/output \

@@ -190,8 +190,8 @@ if __name__ == '__main__':
     model.to(cuda)
     modelTransf.to(cuda)
 
-    from apex import amp
-    model = amp.initialize(model, opt_level='O1')
+    # from apex import amp
+    # model = amp.initialize(model, opt_level='O1')
     model.eval()
 
     logger.info(f"Loading index")
