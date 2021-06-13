@@ -21,6 +21,24 @@ from functools import partial
 
 def main():
     args = train_args()
+    # args.do_train = True
+    # args.prefix="XLMR_testing"
+    # args.predict_batch_size=100
+    # args.model_name="roberta-base"
+    # args.model_name="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext"
+    # args.train_batch_size=5
+    # args.learning_rate=2e-5
+    # args.fp16 = True
+    # args.train_file="data/dense_train.txt"
+    # args.predict_file="data/dense_dev.txt"
+    # args.seed=16
+    # args.eval_period=300
+    # args.max_c_len=300
+    # args.max_q_len=30
+    # args.warmup_ratio=0.1
+    # args.num_train_epochs=20
+    # args.output_dir="XLMR_retriever"
+
 
     # if args.fp16:
     #     apex.amp.register_half_function(torch, 'einsum')
@@ -64,7 +82,7 @@ def main():
 
     model = BERTRetriever(args.model_name)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
-    collate_fc = partial(retrieval_collate, pad_id=tokenizer.pad_token_id)
+    collate_fc = partial(retrieval_collate, pad_id=tokenizer.pad_token_id, model_name=args.model_name)
 
     if args.do_train and args.max_c_len > model_config.max_position_embeddings:
         raise ValueError(

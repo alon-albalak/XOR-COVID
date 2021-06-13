@@ -28,7 +28,8 @@ def update_batch_dict(
     prefix, 
     instances,
     batch_dict, 
-    pad_token_id
+    pad_token_id,
+    model_name
     ):
     batch_dict[f"{prefix}_input_ids"] = collate_tokens([s[prefix]["input_ids"].view(-1) for s in instances], pad_token_id)
 
@@ -36,8 +37,10 @@ def update_batch_dict(
 
     batch_dict[f"{prefix}_mask"] = collate_tokens([s[prefix]["attention_mask"].view(-1) for s in instances], 0)
 
-
-    batch_dict[f"{prefix}_type_ids"] = collate_tokens([s[prefix]["token_type_ids"].view(-1) for s in instances], 0)
+    if "roberta" in model_name:
+        batch_dict[f"{prefix}_type_ids"] = None
+    else:
+        batch_dict[f"{prefix}_type_ids"] = collate_tokens([s[prefix]["token_type_ids"].view(-1) for s in instances], 0)
 
 
 class RetrievalDataset(Dataset):
@@ -123,14 +126,14 @@ class RetrievalDataset(Dataset):
     def __len__(self):
         return len(self.data)
 
-def retrieval_collate(samples, pad_id=0):
+def retrieval_collate(samples, pad_id=0, model_name=None):
 
     batch = {}
     if len(samples) == 0:
         return batch
     for field in samples[0].keys():
         if "raw" not in field:
-            update_batch_dict(field, samples, batch, pad_id)
+            update_batch_dict(field, samples, batch, pad_id, model_name)
         else:
             batch[field] = [s[field] for s in samples]
 
