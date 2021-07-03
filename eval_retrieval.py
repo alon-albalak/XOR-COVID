@@ -163,7 +163,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('raw_data', type=str, default=None, help='query data')
     parser.add_argument('encode_corpus_path', type=str, default='./encoded/bart_aug')
-    parser.add_argument('model_path', type=str, default=None, help="pretrained retriever checjpoint")
+    parser.add_argument('--model_path', type=str, default=None, help="pretrained retriever checjpoint")
     parser.add_argument('--batch-size', type=int, default=100)
     parser.add_argument('--topk', type=int, default=100)
     parser.add_argument('--max-q-len', type=int, default=50)
