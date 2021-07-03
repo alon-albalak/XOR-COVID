@@ -185,7 +185,8 @@ if __name__ == '__main__':
     model_config = AutoConfig.from_pretrained(args.model_name)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     model = BERTEncoder(args.model_name)
-    model = load_saved(model, args.model_path)
+    if args.model_path != "":
+        model = load_saved(model, args.model_path)
     cuda = torch.device('cuda')
     model.to(cuda)
     modelTransf.to(cuda)
