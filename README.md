@@ -4,6 +4,8 @@ This repository contains the source code for an end-to-end open-domain question 
 
 
 ## Installation
+To set up the training environment, follow the instructions in requirements_description.txt
+
 Our system uses PubMedBERT, a neural language model that is pretrained on PubMed abstracts for the retriever. Download the PyTorch version of PubMedBert [here](https://huggingface.co/microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract/tree/main). 
 For reading comprehension, we utilize BioBERT fine-tuned on SQuAD V2 . The model can be found [here](https://huggingface.co/ktrapeznikov/biobert_v1.1_pubmed_squad_v2).
 
