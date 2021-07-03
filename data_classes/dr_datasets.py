@@ -59,7 +59,7 @@ class RetrievalDataset(Dataset):
         self.aug_option = args.aug_option
 
         self.train = args.do_train
-        self.test = "test" in data_path
+        # self.test = "test" in data_path
         print(f"Loading data from {data_path}")
         self.data = [json.loads(line) for line in open(data_path).readlines()]
 
@@ -69,12 +69,12 @@ class RetrievalDataset(Dataset):
         if question.endswith("?"):
             question = question[:-1]
         
-        if self.test:
-            return {
-                "q": self.tokenizer(
-                    question, max_length=self.max_q_len, return_tensors="pt", truncation=True),
-                "question_raw": question
-            }
+        # if self.test:
+        #     return {
+        #         "q": self.tokenizer(
+        #             question, max_length=self.max_q_len, return_tensors="pt", truncation=True),
+        #         "question_raw": question
+        #     }
 
         if isinstance(sample["pos_paras"], list):
             if self.train:
