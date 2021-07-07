@@ -1,8 +1,11 @@
 import os
+import sys
 import json
 import random
 import csv
 import argparse
+
+csv.field_size_limit(sys.maxsize)
 
 
 def load_csv_to_list(csv_path):
