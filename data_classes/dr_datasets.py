@@ -179,7 +179,11 @@ class EncodingDataset(object):
         id2doc = {}
         if 'authors' in self.data[0]:
             for idx, doc in enumerate(self.data):
-                id2doc[idx] = (doc["title"], doc["text"], doc['id'], doc["index"], doc["date"], doc["journal"], doc["authors"])
+                if "language" in doc.keys():
+                    lang = doc["language"]
+                else:
+                    lang = "eng"
+                id2doc[idx] = (doc["title"], doc["text"], doc['id'], doc["index"], doc["date"], doc["journal"], doc["authors"], lang)
         else:
             for idx, doc in enumerate(self.data):
                 id2doc[idx] = (doc["title"], doc["text"], doc['id'])
