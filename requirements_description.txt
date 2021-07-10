@@ -22,7 +22,7 @@ pip3 install \
     transformers==4.6.1 \
     datasets==1.5.0 \
     scipy==1.5.2 \
-    sentence-transformers==1.1.1
+    sentence-transformers==2.0.0
 
 
 CONDA:
