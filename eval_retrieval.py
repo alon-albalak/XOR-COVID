@@ -240,5 +240,5 @@ def main():
         print('{}: {} ...'.format(
             k, np.mean(results)))
 
-if __name__ == "_main__":
+if __name__ == "__main__":
     main()
