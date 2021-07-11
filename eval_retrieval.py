@@ -227,7 +227,7 @@ def main():
     answers_docs = list(zip(questions, answers, retrieved_results, ids))
     init()
     results = []
-    for answer_doc in answers_docs:
+    for answer_doc in tqdm(answers_docs):
         results.append(get_score(answer_doc, topk=args.topk))
 
     aggregate = defaultdict(list)
