@@ -114,7 +114,7 @@ def miniTest(question, answer, paragraph, lang):
         # cosineScore = score
         # if 0.291 <= num and 0.783 <= cosineScore:
         #     return True
-        if 0.6 <= score:
+        if 0.65 <= score:
             return True
     return False
 
