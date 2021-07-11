@@ -216,8 +216,12 @@ def main():
 
             for b_idx in range(len(batch_q)):
                 top_doc_ids = indices[b_idx]
-                topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
-                    doc_id)][1],"id": id2doc[str(doc_id)][2], "language":id2doc[str(doc_id)][7]} for doc_id in top_doc_ids]
+                if len(id2doc[str(top_doc_ids[0])]) < 8:
+                    topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
+                        doc_id)][1],"id": id2doc[str(doc_id)][2], "language":"eng"} for doc_id in top_doc_ids]
+                else:
+                    topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
+                        doc_id)][1],"id": id2doc[str(doc_id)][2], "language":id2doc[str(doc_id)][7]} for doc_id in top_doc_ids]
                 retrieved_results.append(topk_docs)
 
                 new_rank = {}
