@@ -27,18 +27,20 @@ def process_jsonlines(filename):
     extracted_items = []
     with jsonlines.open(filename) as reader:
         for obj in reader:
-            wiki_id = obj["id"]
+            index = obj["index"]
             title = obj["title"]
-            title_id = make_wiki_id(title, 0)
-            text_with_links = obj["text"]
-
-            hyper_linked_titles_text = ""
-            # When we consider the whole article as a document unit (e.g., SQuAD Open, Natural Questions Open)
-            # we'll keep the links with the original articles, and dynamically process and extract the links
-            # when we process with our selector.
-            extracted_items.append({"wiki_id": wiki_id, "title": title_id,
-                                    "plain_text": text_with_links,
-                                    "hyper_linked_titles": hyper_linked_titles_text,
-                                    "original_title": title})
+            text = obj["text"]
+            pmid = obj["id"]
+            date = obj["date"]
+            lang = obj["language"]
+            
+            extracted_items.append({
+                "id": index,
+                "title":title,
+                "text": text,
+                "pmid": pmid,
+                "date": date,
+                "language":lang
+                })
 
     return extracted_items

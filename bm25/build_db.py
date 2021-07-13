@@ -9,9 +9,7 @@ import json
 import os
 import logging
 import importlib.util
-import glob
 
-from multiprocessing import Pool as ProcessPool
 from tqdm import tqdm
 from utils import process_jsonlines
 
@@ -74,7 +72,7 @@ def get_contents(filename):
                           hyper_linked_titles, original_title))
     return documents
 
-def store_contents(data_dir, save_path, preprocess, num_workers=None):
+def store_contents(data_file, save_path, preprocess):
     """Preprocess and store a corpus of documents in sqlite.
     Args:
         data_path: Root path to directory (or directory of directories) of files
@@ -82,10 +80,8 @@ def store_contents(data_dir, save_path, preprocess, num_workers=None):
         save_path: Path to output sqlite db.
         preprocess: Path to file defining a custom `preprocess` function. Takes
           in and outputs a structured doc.
-        num_workers: Number of parallel processes to use when reading docs.
     """
-    filenames = [f for f in glob.glob(
-        data_dir + "/*/wiki_*", recursive=True) if ".bz2" not in f]
+    documents = process_jsonlines(data_file)
     if os.path.isfile(save_path):
         raise RuntimeError('%s already exists! Not overwriting.' % save_path)
 
@@ -93,18 +89,20 @@ def store_contents(data_dir, save_path, preprocess, num_workers=None):
     conn = sqlite3.connect(save_path)
     c = conn.cursor()
     c.execute(
-        "CREATE TABLE documents (id PRIMARY KEY, text, linked_title, original_title);")
+        "CREATE TABLE documents (id PRIMARY KEY, title, text, pmid, date, language);")
 
-    workers = ProcessPool(num_workers, initializer=init,
-                          initargs=(preprocess,))
-    count = 0
-    with tqdm(total=len(filenames)) as pbar:
-        for pairs in tqdm(workers.imap_unordered(get_contents, filenames)):
-            count += len(pairs)
-            c.executemany(
-                "INSERT OR REPLACE INTO documents VALUES (?,?,?,?)", pairs)
-            pbar.update()
-    logger.info('Read %d docs.' % count)
+    for doc in tqdm(documents):
+        line = [doc["id"], doc["title"], doc["text"], doc["pmid"], doc["date"], doc["language"]]
+        c.execute("INSERT OR REPLACE INTO documents VALUES (?,?,?,?,?,?)",line)
+
+    # with tqdm(total=len(filenames)) as pbar:
+    #     for pairs in tqdm(workers.imap_unordered(get_contents, filenames)):
+    #         count += len(pairs)
+    #         c.executemany(
+    #             "INSERT OR REPLACE INTO documents VALUES (?,?,?,?,?)", pairs)
+    #         pbar.update()
+
+    logger.info('Read %d docs.' % len(documents))
     logger.info('Committing...')
     conn.commit()
     conn.close()
@@ -116,15 +114,17 @@ def store_contents(data_dir, save_path, preprocess, num_workers=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('data_dir', type=str, help='/path/to/data')
+    parser.add_argument('data_file', type=str, help='/path/to/data.jsonl')
     parser.add_argument('save_path', type=str, help='/path/to/saved/db.db')
     parser.add_argument('--preprocess', type=str, default=None,
                         help=('File path to a python module that defines '
                               'a `preprocess` function'))
-    parser.add_argument('--num-workers', type=int, default=None,
-                        help='Number of CPU processes (for tokenizing, etc)')
     args = parser.parse_args()
 
+    # args.data_file="peratonCovidNonEnglish/peraton_corpus.jsonl"
+    # args.save_path="bm25/test_db.db"
+    # if os.path.isfile(args.save_path):
+    #     os.remove(args.save_path)
+
     store_contents(
-        args.data_dir, args.save_path, args.preprocess, args.num_workers
-    )
+        args.data_file, args.save_path, args.preprocess)
