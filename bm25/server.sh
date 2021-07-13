@@ -27,7 +27,7 @@ fi
 # ElasticSearch version
 version=6.5.3
 es_port=9200
-es_memory=5g
+es_memory=2g
 
 endpoint="http://localhost:${es_port}"
 
