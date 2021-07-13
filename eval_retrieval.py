@@ -36,6 +36,8 @@ from sentence_transformers import SentenceTransformer, util
 import torch
 from coqa_process.evaluate_qa import normalize_answer
 
+import nltk
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 if (logger.hasHandlers()):
@@ -52,7 +54,9 @@ def init():
 
 import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-modelTransf = SentenceTransformer('bert-base-nli-mean-tokens')  # NEW LINE
+# modelTransf = SentenceTransformer('bert-base-nli-mean-tokens')  # NEW LINE
+# modelTransf = SentenceTransformer('stsb-xlm-r-multilingual')  # NEW LINE
+modelTransf = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')  # NEW LINE
 
 def f1_score(prediction, ground_truth):
     prediction_tokens = normalize_answer(prediction).split()
@@ -66,9 +70,38 @@ def f1_score(prediction, ground_truth):
     f1 = (2 * precision * recall) / (precision + recall)
     return f1
 
-def miniTest(question, answer, paragraph):
-    strWord = paragraph
-    sentences = strWord.split(".")
+def miniTest(question, answer, paragraph, lang):
+    langs = {
+        "spa": "spanish",
+        "ger": "german",
+        "por": "portuguese",
+        "fre": "french",
+        # "hun": "hungarian", doesn't exist
+        "tur": "turkish",
+        "rus": "russian",
+        "dut": "dutch",
+        "ita": "italian",
+        "pol": "polish",
+        "slv": "slovene",
+        "cze": "czech",
+    }
+    if lang == "eng":
+        sentences = nltk.sent_tokenize(paragraph)
+    elif lang in langs:
+        tokenizer = nltk.data.load(f"tokenizers/punkt/{langs[lang]}.pickle")
+        sentences = tokenizer.tokenize(paragraph)
+    else:
+        if lang == "chi":
+            sentences = [sent + "\u3002" for sent in paragraph.split("\u3002") if len(sent) > 3]
+        elif lang == "ara":
+            sentences = [sent + "." for sent in paragraph.split(".") if len(sent) > 3]  # probably not great
+        elif lang == "kor":
+            sentences = [sent + "." for sent in paragraph.split(".") if len(sent) > 3]  # probably not great
+        else:
+            sentences = paragraph.split(".")
+
+    # strWord = paragraph
+    # sentences = strWord.split(".")
     stripSentences = [stri.strip() for stri in sentences]
     corpusEmbeddings = modelTransf.encode(stripSentences,show_progress_bar=False)
     queries = [answer]
@@ -77,28 +110,13 @@ def miniTest(question, answer, paragraph):
     cosScore = util.pytorch_cos_sim(queryEmbeddings, corpusEmbeddings)[0]
     bestResults = torch.topk(cosScore, k=topRank)
     for idx, score in zip(bestResults[1], bestResults[0]):
-        num = f1_score(stripSentences[idx], queries[0])
-        cosineScore = score
-        if 0.291 <= num and 0.783 <= cosineScore:
-            return True
-        if 0.82 <= cosineScore:
+        # num = f1_score(stripSentences[idx], queries[0])
+        # cosineScore = score
+        # if 0.291 <= num and 0.783 <= cosineScore:
+        #     return True
+        if 0.65 <= score:
             return True
     return False
-
-
-
-def get_F1(answer_doc):
-    answer = example["Answer"]
-
-    gold_paras = []
-    for p in passages:
-        best_span, best_score = find_closest_span_match(
-            p['contents'], answer)
-        if best_score >= 0.8:
-            gold_paras.append((p, best_score))
-
-    example['answer_paras'] = gold_paras
-    return example
 
 def get_score(answer_doc, topk=20):
     """Search through all the top docs to see if they have the answer."""
@@ -109,57 +127,22 @@ def get_score(answer_doc, topk=20):
     topkF1 = []
     real_answer = []
     for p in docs:
-        topkpara_covered.append(
-            int(para_has_answer(answer, p["text"], PROCESS_TOK)))
-        topkrecall.append(
-            int(p["id"] == id))
-        real_answer.append(para_has_answer(answer, p['text'], PROCESS_TOK) and p["id"] == id)
         topScore = False
-        # for a in answer:
-        #     best_span, best_score = find_closest_span_match(p["text"], a)
-        #     if best_score >= 0.8:
-        #         topScore = True
-        #         break
         for a in answer:
-            booVar = False
-            if len(a.split()) <= 3:
-                best_span, best_score = find_closest_span_match(p["text"], a)
-                if best_score >= 0.8:
-                    booVar = True
-            else:
-                booVar = miniTest(question, a, p["text"])
-            if booVar:
+            if miniTest(question, a, p["text"], p["language"]):
                 topScore = True
                 break
         topkF1.append(int(topScore))
     return {
-        "1": int(np.sum(topkpara_covered[:1]) > 0),
-        "5": int(np.sum(topkpara_covered[:5]) > 0),
-        "20": int(np.sum(topkpara_covered[:20]) > 0),
-        "50": int(np.sum(topkpara_covered[:50]) > 0),
-        "100": int(np.sum(topkpara_covered[:100]) > 0),
-        #"500": int(np.sum(topkpara_covered[:500]) > 0),
-        "recall@1": int(np.sum(topkrecall[:1]) > 0),
-        "recall@5": int(np.sum(topkrecall[:5]) > 0),
-        "recall@20": int(np.sum(topkrecall[:20]) > 0),
-        "recall@50": int(np.sum(topkrecall[:50]) > 0),
-        "recall@100": int(np.sum(topkrecall[:100]) > 0),
-        #"recall@500": int(np.sum(topkrecall[:500]) > 0),
-        "real_answer@1": int(np.sum(real_answer[:1]) > 0),
-        "real_answer@5": int(np.sum(real_answer[:5]) > 0),
-        "real_answer@20": int(np.sum(real_answer[:20]) > 0),
-        "real_answer@50": int(np.sum(real_answer[:50]) > 0),
-        "real_answer@100": int(np.sum(real_answer[:100]) > 0),
         "F1@1": int(np.sum(topkF1[:1]) > 0),
         "F1@5": int(np.sum(topkF1[:5]) > 0),
         "F1@20": int(np.sum(topkF1[:20]) > 0),
         "F1@50": int(np.sum(topkF1[:50]) > 0),
         "F1@100": int(np.sum(topkF1[:100]) > 0),
-        #"F1@500": int(np.sum(topkF1[:500]) > 0)
     }
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('raw_data', type=str, default=None, help='query data')
     parser.add_argument('encode_corpus_path', type=str, default='./encoded/bart_aug')
@@ -171,8 +154,18 @@ if __name__ == '__main__':
     parser.add_argument("--save-pred", default="", type=str)
     parser.add_argument("--dimension", default=768, type=int)
     parser.add_argument('--index-type', type=str, default='exact')
+    parser.add_argument("--no_cuda", action="store_true")
     
     args = parser.parse_args()
+
+    #debugging args
+    # args.raw_data="multilingual_debugging/retrieval_debugging.txt"
+    # args.encode_corpus_path="multilingual_debugging/mBERT_encoded_corpus"
+    # args.model_path="multilingualCOUGH-seed16-bsz30-fp16True-lr2e-05-bert-base-multilingual-uncased/checkpoint_best.pt"
+    # args.batch_size=1
+    # args.model_name="bert-base-multilingual-uncased"
+    # args.topk=1
+    # args.no_cuda=True
 
     logger.info(f"Loading questions")
     qas = [json.loads(line) for line in open(args.raw_data).readlines()]
@@ -187,9 +180,9 @@ if __name__ == '__main__':
     model = BERTEncoder(args.model_name)
     if args.model_path:
         model = load_saved(model, args.model_path)
-    cuda = torch.device('cuda')
-    model.to(cuda)
-    modelTransf.to(cuda)
+    device = torch.device("cpu") if args.no_cuda else torch.device('cuda')
+    model.to(device)
+    modelTransf.to(device)
 
     # from apex import amp
     # model = amp.initialize(model, opt_level='O1')
@@ -213,7 +206,9 @@ if __name__ == '__main__':
             batch_q_encodes = tokenizer(
                 batch_q, max_length=args.max_q_len, return_tensors="pt", truncation=True, padding=True)
 
-            batch_q_encodes = move_to_cuda(dict(batch_q_encodes))
+            batch_q_encodes = dict(batch_q_encodes)
+            if not args.no_cuda:
+                batch_q_encodes = move_to_cuda(batch_q_encodes)
             q_embeds = model(
                 batch_q_encodes["input_ids"], batch_q_encodes["attention_mask"], batch_q_encodes.get("token_type_ids", None))
             q_embeds_numpy = q_embeds.cpu().contiguous().numpy()
@@ -221,30 +216,23 @@ if __name__ == '__main__':
 
             for b_idx in range(len(batch_q)):
                 top_doc_ids = indices[b_idx]
-                topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
-                    doc_id)][1],"id": id2doc[str(doc_id)][2]} for doc_id in top_doc_ids]
+                if len(id2doc[str(top_doc_ids[0])]) < 8:
+                    topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
+                        doc_id)][1],"id": id2doc[str(doc_id)][2], "language":"eng"} for doc_id in top_doc_ids]
+                else:
+                    topk_docs = [{"title": id2doc[str(doc_id)][0], "text": id2doc[str(
+                        doc_id)][1],"id": id2doc[str(doc_id)][2], "language":id2doc[str(doc_id)][7]} for doc_id in top_doc_ids]
                 retrieved_results.append(topk_docs)
 
                 new_rank = {}
                 for place, doc_index in enumerate(topk_docs):
                     new_rank[place] = place
 
-
-
-
     answers_docs = list(zip(questions, answers, retrieved_results, ids))
     init()
     results = []
-    for answer_doc in answers_docs:
+    for answer_doc in tqdm(answers_docs):
         results.append(get_score(answer_doc, topk=args.topk))
-    # results = get_score(qas_docs,topk=args.topk)
-
-    error_cases = []
-    for instance, res in zip(answers_docs, results):
-        if res['20'] == 0:
-            error_cases.append(instance)
-    json.dump(error_cases, open(
-        "nq-symmetric-dpr-dev-errors.json", 'w'), indent=1)
 
     aggregate = defaultdict(list)
     for r in results:
@@ -255,3 +243,6 @@ if __name__ == '__main__':
         results = aggregate[k]
         print('{}: {} ...'.format(
             k, np.mean(results)))
+
+if __name__ == "__main__":
+    main()

@@ -91,7 +91,8 @@ def convert_peraton_jsons_to_CORD_jsonl(
                 index,
                 date,
                 journal,
-                authors
+                authors,
+                language
             }
     """
 
@@ -146,6 +147,7 @@ def convert_peraton_jsons_to_CORD_jsonl(
                         "date": date,
                         "journal": "unknown",  # we currently don't have this information
                         "authors": authors,
+                        "language":"eng"
                     }
                     json.dump(entry, dumpFile, ensure_ascii=False)
                     dumpFile.write("\n")
@@ -164,6 +166,7 @@ def convert_peraton_jsons_to_CORD_jsonl(
                             "date": date,
                             "journal": "unknown",  # we currently don't have this information
                             "authors": authors,
+                            "language":lang
                         }
                         json.dump(entry, dumpFile, ensure_ascii=False)
                         dumpFile.write("\n")

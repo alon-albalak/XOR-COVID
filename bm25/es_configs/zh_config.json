@@ -1,0 +1,20 @@
+{
+    "settings": {
+        "index": {
+            "analysis": {
+                "tokenizer": {
+                    "smartcn_user_dict": {
+                        "type": "smartcn_tokenizer",
+                        "mode": "search"
+                    }
+                },
+                "analyzer": {
+                    "my_analyzer": {
+                        "type": "custom",
+                        "tokenizer": "smartcn_user_dict"
+                    }
+                }
+            }
+        }
+    }
+}
