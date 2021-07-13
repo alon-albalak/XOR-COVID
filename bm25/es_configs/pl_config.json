@@ -1,0 +1,20 @@
+{
+    "settings": {
+        "index": {
+            "analysis": {
+                "tokenizer": {
+                    "stempel_user_dict": {
+                        "type": "stempel_tokenizer",
+                        "mode": "search"
+                    }
+                },
+                "analyzer": {
+                    "my_analyzer": {
+                        "type": "custom",
+                        "tokenizer": "stempel_user_dict"
+                    }
+                }
+            }
+        }
+    }
+}
