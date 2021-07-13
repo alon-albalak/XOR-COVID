@@ -52,6 +52,7 @@ def normalize(text):
     return unicodedata.normalize('NFD', text)
 
 def para_has_answer(answer, para, tokenizer):
+    # TODO: Fix for multilingual tokenization
     assert isinstance(answer, list)
     text = normalize(para)
     tokens = tokenizer.tokenize(text)
