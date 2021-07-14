@@ -40,7 +40,10 @@ def process_jsonlines(filename):
             text = obj["text"]
             pmid = obj["id"]
             date = obj["date"]
-            lang = obj["language"]
+            if "language" in obj.keys():
+                lang = obj["language"]
+            else:
+                lang = "eng"
             
             extracted_items.append({
                 "id": index,

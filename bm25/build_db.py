@@ -121,7 +121,7 @@ if __name__ == '__main__':
                               'a `preprocess` function'))
     args = parser.parse_args()
 
-    # args.data_file="peratonCovidNonEnglish/peraton_corpus.jsonl"
+    # args.data_file="2021-05-31/CORD19_corpus.jsonl"
     # args.save_path="bm25/test_db.db"
     # if os.path.isfile(args.save_path):
     #     os.remove(args.save_path)

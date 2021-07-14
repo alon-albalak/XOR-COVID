@@ -3,7 +3,6 @@ import argparse
 import time
 import re
 
-from utils import find_hyper_linked_titles, remove_tags, normalize
 
 
 class DocDB(object):
@@ -44,17 +43,6 @@ class DocDB(object):
         cursor.close()
         return result if result is None else result[0]
 
-    def get_hyper_linked(self, doc_id):
-        """Fetch the hyper-linked titles of the doc for 'doc_id'."""
-        cursor = self.connection.cursor()
-        cursor.execute(
-            "SELECT linked_title FROM documents WHERE id = ?",
-            (doc_id,)
-        )
-        result = cursor.fetchone()
-        cursor.close()
-        return result if (result is None or len(result[0]) == 0) else [normalize(title) for title in result[0].split("\t")]
-
     def get_original_title(self, doc_id):
         """Fetch the original title name  of the doc."""
         cursor = self.connection.cursor()
@@ -65,6 +53,16 @@ class DocDB(object):
         result = cursor.fetchone()
         cursor.close()
         return result if result is None else result[0]
+
+    def get_doc_info(self, doc_id):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT title, text, pmid, language FROM documents WHERE id = ?",(doc_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        if result is None:
+            return []
+        else:
+            return result
 
     def get_doc_text_section_separations(self, doc_id):
         # WIP: we might have better formats to keep the information.
