@@ -67,5 +67,6 @@ for filename in tqdm(os.listdir(path)):
                      "journal": metadata[data['paper_id']]['journal'],"authors": metadata[data['paper_id']]['authors']}
             json.dump(entry, dumpFile)
             dumpFile.write('\n')
+            counter += 1
 
 dumpFile.close()
