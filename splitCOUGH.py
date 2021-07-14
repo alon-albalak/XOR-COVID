@@ -62,6 +62,7 @@ def convert_COUGH_to_retrieval_dataset(data_path="COUGH/FAQ_Bank.csv", dev_perce
                 "id": datum[COUGH_fields.index("index")],
                 "pos_paras": [{"title": datum[COUGH_fields.index("url")], "text": datum[COUGH_fields.index("answer")]}],
                 "neg_paras": [],
+                "language":datum[lang_idx]
             }
             while len(sample["neg_paras"]) < neg_para_samples:
                 random_choice = random.choice(train_subset)

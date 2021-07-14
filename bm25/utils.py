@@ -1,15 +1,23 @@
 import unicodedata
 import jsonlines
 
-
-def normalize(text):
-    """Resolve different type of unicode encodings / capitarization in HotpotQA data."""
-    text = unicodedata.normalize('NFD', text)
-    return text[0].capitalize() + text[1:]
-
-def make_wiki_id(title, para_index):
-    title_id = "{0}_{1}".format(normalize(title), para_index)
-    return title_id
+# This includes all supported languages in the peraton covid dataset
+peraton_lang_id_to_ISO6391 = {
+    "ara":"ar",
+    "ger":"de",
+    "eng":"en",
+    "spa":"es",
+    "fre":"fr",
+    "hun":"hu",
+    "ita":"it",
+    "kor":"ko",
+    "dut":"nl",
+    # "pol":"pl", not working for unknown reason
+    "por":"pt",
+    "rus":"ru",
+    "tur":"tr",
+    "chi":"zh",
+}
 
 def process_jsonlines(filename):
     """
