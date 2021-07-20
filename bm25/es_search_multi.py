@@ -13,7 +13,8 @@ import nltk
 import numpy as np
 import torch
 from sentence_transformers import SentenceTransformer, util
-modelTransf = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
+# modelTransf = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
+modelTransf = SentenceTransformer("bert-base-nli-mean-tokens")
 
 from utils import peraton_lang_id_to_ISO6391
 LANGS=peraton_lang_id_to_ISO6391.values()
@@ -110,7 +111,10 @@ def main():
 
         # some questions are very long, truncate to 5000 characters
         question = item["question"][:5000]
-        lang =  item["language"]
+        if "language" in item.keys():
+            lang =  item["language"]
+        else:
+            lang = "en"
         answer_embeddings = []
         for answer in item["answers"]:
             answer_embeddings.append(embed_sentences([answer]))
