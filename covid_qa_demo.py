@@ -52,6 +52,7 @@ args = parser.parse_args()
 chosen_model_dense = args.retriever_model_name
 chosen_model_reader = args.qa_model_name
 reader_path = args.qa_model_name
+max_answer_length = 30
 
 cuda = torch.device('cuda')
 
@@ -213,7 +214,7 @@ if __name__ =='__main__':
                 if doc["text"] == "":
                     continue
                 #run through the qa/reading module for each document for the question
-                inputs = qa_tokenizer.encode_plus(query, doc["text"], add_special_tokens=True, return_tensors="pt", max_length=512)
+                inputs = qa_tokenizer.encode_plus(query, doc["text"], add_special_tokens=True, return_tensors="pt", truncation=True)
                 inputs.to(cuda)
                 input_ids = inputs["input_ids"].tolist()[0]
 
@@ -244,7 +245,7 @@ if __name__ =='__main__':
                         ):
                             continue
                         # Don't consider answers with a length that is either < 0 or > max_answer_length.
-                        if end_index <= start_index or end_index - start_index + 1 > 30:
+                        if end_index <= start_index or end_index - start_index + 1 > max_answer_length:
                             continue
 
                         prelim_predictions.append(
