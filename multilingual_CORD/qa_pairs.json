@@ -1,0 +1,87 @@
+[
+    {
+        "q": "¿Cuáles son las complicaciones del barotrauma?",
+        "a": "neumomediastino, neumotórax, enfisema subcutáneo, neumoperitoneo, embolización aérea y choque obstructivo",
+        "a_source": "es-0002"
+    },
+    {
+        "q": "¿Qué tan lejos pueden viajar las gotas?",
+        "a": "Las gotas pueden viajar hasta dos metros aproximadamente",
+        "a_source": "es-0003"
+    },
+    {
+        "q": "¿Cuál es el propósito de una caja acrílica?",
+        "a": "un dispositivo de barrera adicional que tiene como función contener la diseminación de aerosoles durante procedimientos como la intubación",
+        "a_source": "es-0003"
+    },
+    {
+        "q": "¿Qué poblaciones deben tener prioridad para recibir la vacuna?",
+        "a": "el mayor beneficio se obtiene iniciando la vacunación  con  trabajadores  de  la  salud  y  las  personas  de  60 años o más con o sin comorbilidades por década de la vida descendente, además de las personas de 50 a 59 años con comorbilidades y posteriormente la población restante",
+        "a_source": "es-0004"
+    },
+    {
+        "q": "¿En qué plataformas se han desarrollado las vacunas?",
+        "a": "virus  inactivados,  virus  atenuados, subunidades de proteínas o partículas tipo virus; otras son novedosas, como las de DNA o mRNA, vectores virales replicantes o no replicantes, o de células presentadoras de antígeno",
+        "a_source": "es-0004"
+    },
+    {
+        "q": "¿Cuál es la eficacia de la vacuna Moderna?",
+        "a": "Pfizer/BioNTech, Moderna y el Instituto Gamaleya, a través de comunicados de prensa anunciaron que el primer análisis intermedio de sus es-tudios clínicos FASE 3, sus vacunas demuestran 94.5%, 92.5% y 92.0% de eficacia para proteger de infección sintomática por Covid-19",
+        "a_source": "es-0004"
+    },
+    {
+        "q": "¿El rastreo de contactos ayuda a controlar la pandemia?",
+        "a": "La formación de trazadores, que  incluya  profesionales  de  la salud y sociedad, impacta positivamente  en  el  control  de  la pandemia.",
+        "a_source": "es-0006"
+    },
+    {
+        "q": "¿Cómo ayuda el distanciamiento social?",
+        "a": "los números totales, pero negativamente en la  salud  mental",
+        "a_source": "es-0006"
+    },
+    {
+        "q": "¿Qué condiciones preexistentes pueden aumentar el riesgo de covid-19 grave?",
+        "a": "obesidad, edad >60 años, diabetes mellitus, hipertensión arterial, enfermedad pulmonar obstructiva crónica, enfermedad cardiovascular, enfermedad renal crónica y cáncer",
+        "a_source": "es-0007"
+    },
+    {
+        "q": "¿Qué poblaciones tienen el mayor riesgo de covid?",
+        "a": "edad >60 años, embarazo,  mujeres  en  periodo  de  lactancia,  diagnóstico de diabetes mellitus, hipertensión arterial, enfermedad cardiovascular,  enfermedad  renal  crónica,  obesidad,  cáncer  y  condiciones  que  generen  inmunosupresión,  entre otras condiciones",
+        "a_source": "es-0007"
+    },
+    {
+        "q": "¿Pueden las mujeres embarazadas transmitir la covid a su hijo?",
+        "a": "No hay evidencia de transmisión de madre a hijo",
+        "a_source":"es-0007"
+    },
+    {
+        "q": "¿Covid aumenta el riesgo de preeclampsia?",
+        "a": "se  ha  reportado  mayor  probabilidad  de  preeclampsia  y  otros  desenlaces,  como  ruptura  prematura  de  membranas,  sufrimiento  fetal  y parto prematuro, limitados al tercer trimestre",
+        "a_source": "es-0007"
+    },
+    {
+        "q": "¿Se puede transmitir el covid a través de la leche materna?",
+        "a": "En estudios de leche materna de mujeres infectadas no se ha detectado el virus",
+        "a_source":"es-0007"
+    },
+    {
+        "q": "¿Es la diabetes un factor de riesgo para el coronavirus?",
+        "a": "diabetes mellitus (DM) es un factor de riesgo",
+        "a_source":"es-0007"
+    },
+    {
+        "q": "¿Qué proporción de pacientes con obesidad grave necesita ventilación mecánica invasiva?",
+        "a": "85.7%",
+        "a_source":"es-0007"
+    },
+    {
+        "q": "¿Cómo afecta el covid a los pacientes con enfermedad renal?",
+        "a": "Covid-19  puede  empeorar  la  alteración  de  la  función  renal y llevar a un rápido deterioro",
+        "a_source":"es-0007"
+    },
+    {
+        "q": "¿La EPOC aumenta el riesgo de covid grave?",
+        "a": "enfermedad pulmonar crónica (EPOC) mostró un aumento de cuatro veces  el  riesgo  de  desarrollar  Covid-19  severo",
+        "a_source":"es-0007"
+    }
+]
