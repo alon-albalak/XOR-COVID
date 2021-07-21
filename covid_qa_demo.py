@@ -62,12 +62,6 @@ elif os.path.isfile("../style.css"):
 else:
     raise FileNotFoundError("Could not find a css style file")
 
-def filter_stopwords(s):
-    tokens = s.split()
-    stop_words = set(stopwords.words('english'))
-    filtered_sentence = [w for w in tokens if not w in stop_words]
-    return " ".join(filtered_sentence)
-
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
@@ -122,7 +116,7 @@ if __name__ =='__main__':
     qa_model, qa_tokenizer = init_reader()
     dateFlag = False
     local_css(style_path)
-    analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '6','7','8','9','10'])
+    analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '10', '20'])
     analysisInt = int(analysis)
     startDate = st.sidebar.date_input('start date', datetime.date.today())
     endDate = st.sidebar.date_input('end date', datetime.date.today())
@@ -191,26 +185,28 @@ if __name__ =='__main__':
             num_docs = float(len(topk_docs))
             corpus = [x['text'] for x in topk_docs]
 
+
+            # TODO: If we want to cluster documents, need to use a multilingual cluster algorithm (eg. cluster in embedding space)
             #cluster top 30 documents for retrieval diversity and extract top documents from each cluster
-            vectorizer = TfidfVectorizer()
-            X = vectorizer.fit_transform(corpus)
-            num_clusters = min(len(topk_docs),3)
-            kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(X)
-            proportions = {0: 0, 1: 0, 2: 0}
-            for label in kmeans.labels_:
-                proportions[label] += 1
-            cluster_counts = {}
-            for k,v in proportions.items():
-                cluster_counts[k] = math.ceil((v/num_docs) * 10)
-            cluster_docs = []
-            for i,doc in enumerate(topk_docs):
-                label = kmeans.labels_[i]
-                if cluster_counts[label] > 0:
-                    cluster_counts[label] -= 1
-                    cluster_docs.append(doc)
-                else:
-                    continue
-            topk_docs = cluster_docs
+            # vectorizer = TfidfVectorizer()
+            # X = vectorizer.fit_transform(corpus)
+            # num_clusters = min(len(topk_docs),3)
+            # kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(X)
+            # proportions = {0: 0, 1: 0, 2: 0}
+            # for label in kmeans.labels_:
+            #     proportions[label] += 1
+            # cluster_counts = {}
+            # for k,v in proportions.items():
+            #     cluster_counts[k] = math.ceil((v/num_docs) * 10)
+            # cluster_docs = []
+            # for i,doc in enumerate(topk_docs):
+            #     label = kmeans.labels_[i]
+            #     if cluster_counts[label] > 0:
+            #         cluster_counts[label] -= 1
+            #         cluster_docs.append(doc)
+            #     else:
+            #         continue
+            # topk_docs = cluster_docs
 
 
             for doc in topk_docs:
