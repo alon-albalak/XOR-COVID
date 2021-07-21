@@ -213,7 +213,7 @@ if __name__ =='__main__':
                 if doc["text"] == "":
                     continue
                 #run through the qa/reading module for each document for the question
-                inputs = qa_tokenizer.encode_plus(query, doc["text"], add_special_tokens=True, return_tensors="pt")
+                inputs = qa_tokenizer.encode_plus(query, doc["text"], add_special_tokens=True, return_tensors="pt", max_length=512)
                 inputs.to(cuda)
                 input_ids = inputs["input_ids"].tolist()[0]
 
