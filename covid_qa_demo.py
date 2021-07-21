@@ -55,6 +55,13 @@ reader_path = args.qa_model_name
 
 cuda = torch.device('cuda')
 
+if os.path.isfile("style.css"):
+    style_path="style.css"
+elif os.path.isfile("../style.css"):
+    style_path="../style.css"
+else:
+    raise FileNotFoundError("Could not find a css style file")
+
 def filter_stopwords(s):
     tokens = s.split()
     stop_words = set(stopwords.words('english'))
@@ -114,8 +121,8 @@ if __name__ =='__main__':
 
     qa_model, qa_tokenizer = init_reader()
     dateFlag = False
-    local_css("../style.css")
-    analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5'])
+    local_css(style_path)
+    analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '6','7','8','9','10'])
     analysisInt = int(analysis)
     startDate = st.sidebar.date_input('start date', datetime.date.today())
     endDate = st.sidebar.date_input('end date', datetime.date.today())
