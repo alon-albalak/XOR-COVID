@@ -9,7 +9,7 @@ git clone https://github.com/alon-albalak/XOR-COVID.git
 cd XOR-COVID
 
 Create and prepare environment:
-conda create --name myenv python=3.6
+conda create --name myenv python=3.7
 conda activate myenv
 
 PIP:
