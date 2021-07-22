@@ -83,5 +83,18 @@
         "q": "¿La EPOC aumenta el riesgo de covid grave?",
         "a": "enfermedad pulmonar crónica (EPOC) mostró un aumento de cuatro veces  el  riesgo  de  desarrollar  Covid-19  severo",
         "a_source":"es-0007"
+    },
+    {
+        "q": "¿Cuál es el efecto de la ERC en pacientes con SARS-CoV-2?",
+        "a": "El  riesgo  de  muertefue  mayor",
+        "a_source":"es-0008"
+    },
+    {
+        "q": "¿Qué sistema es la causa más frecuente de ingreso hospitalario?",
+        "a": "La infección por SARS-CoV-2 se manifiesta tempranamente en el sistema pulmonar y es la causa más frecuente de admisión hospitalaria",
+        "a_source":"es-0008"
+    },
+    {
+        "q": ""
     }
 ]
