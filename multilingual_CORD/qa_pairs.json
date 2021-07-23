@@ -52,7 +52,7 @@
     {
         "q": "¿Pueden las mujeres embarazadas transmitir la covid a su hijo?",
         "a": "No hay evidencia de transmisión de madre a hijo",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿Covid aumenta el riesgo de preeclampsia?",
@@ -62,39 +62,41 @@
     {
         "q": "¿Se puede transmitir el covid a través de la leche materna?",
         "a": "En estudios de leche materna de mujeres infectadas no se ha detectado el virus",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿Es la diabetes un factor de riesgo para el coronavirus?",
         "a": "diabetes mellitus (DM) es un factor de riesgo",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿Qué proporción de pacientes con obesidad grave necesita ventilación mecánica invasiva?",
         "a": "85.7%",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿Cómo afecta el covid a los pacientes con enfermedad renal?",
         "a": "Covid-19  puede  empeorar  la  alteración  de  la  función  renal y llevar a un rápido deterioro",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿La EPOC aumenta el riesgo de covid grave?",
         "a": "enfermedad pulmonar crónica (EPOC) mostró un aumento de cuatro veces  el  riesgo  de  desarrollar  Covid-19  severo",
-        "a_source":"es-0007"
+        "a_source": "es-0007"
     },
     {
         "q": "¿Cuál es el efecto de la ERC en pacientes con SARS-CoV-2?",
         "a": "El  riesgo  de  muertefue  mayor",
-        "a_source":"es-0008"
+        "a_source": "es-0008"
     },
     {
         "q": "¿Qué sistema es la causa más frecuente de ingreso hospitalario?",
         "a": "La infección por SARS-CoV-2 se manifiesta tempranamente en el sistema pulmonar y es la causa más frecuente de admisión hospitalaria",
-        "a_source":"es-0008"
+        "a_source": "es-0008"
     },
     {
-        "q": ""
+        "q": "¿Qué porcentaje de pacientes con apendicitis tuvieron apendicitis gangrenosa durante la pandemia?",
+        "a": "Los hallazgos intraoperatorios correspondieron a apendicitis gangrenosa o gangrenosa y perforada en el 52,7 % (n=29) de los pacientes operados en pandemia",
+        "a_source": "es-0011"
     }
 ]
