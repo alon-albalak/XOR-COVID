@@ -129,7 +129,7 @@ if __name__ =='__main__':
     local_css(style_path)
     analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '10', '20'])
     analysisInt = int(analysis)
-    language_selection = st.sidebar.multiselect('Select one or more article languages', ['All','Chinese','English','Spanish'])
+    language_selection = st.sidebar.multiselect('Select one or more article languages', ['All','Chinese','English','Spanish'], default=['All'])
     if "All" in language_selection:
         language_selection=["All"]
     startDate = st.sidebar.date_input('start date', datetime.date.today())
