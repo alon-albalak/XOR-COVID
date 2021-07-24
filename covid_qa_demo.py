@@ -109,6 +109,16 @@ def find_span(query,text):
         return best_span
     return None
 
+def checkLanguage(doc_language, language_selection):
+    if "All" in language_selection:
+        return True
+    elif doc_language in language_selection:
+        return True
+    else:
+        return False
+
+
+
 if __name__ =='__main__':
 
     dense_index_path = args.index_path
@@ -119,9 +129,9 @@ if __name__ =='__main__':
     local_css(style_path)
     analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '10', '20'])
     analysisInt = int(analysis)
-    language_selection = st.sidebar.multiselect('Select article language(s)', ['Any','Chinese','English','Spanish'])
+    language_selection = st.sidebar.multiselect('Select one or more article languages', ['All','Chinese','English','Spanish'])
     if "All" in language_selection:
-        language_selection=["Any"]
+        language_selection=["All"]
     startDate = st.sidebar.date_input('start date', datetime.date.today())
     endDate = st.sidebar.date_input('end date', datetime.date.today())
     if startDate > endDate:
@@ -133,10 +143,6 @@ if __name__ =='__main__':
         """ <style> .sidebar .sidebar-content { background-image: linear-gradient(#2e7bcf,#2e7bcf); color: green; } </style> """,
         unsafe_allow_html=True, )
     st.title("Ask any question about COVID-19!")
-
-
-    topk = 50
-
 
     query = st.text_input('Enter your question')
 
@@ -159,16 +165,26 @@ if __name__ =='__main__':
             topk_docs = [{"title": corpus[str(doc_id)][0], "text": corpus[str(doc_id)][1],
                 "date": corpus[str(doc_id)][4], "journal": corpus[str(doc_id)][5], 
                 "language": corpus[str(doc_id)][7]} for doc_id in top_doc_ids]
+            # filter for docs in correct date range
             topk_docs_date = []
             for doc in topk_docs:
                 if checkDate(datetime.datetime(startDate.year, startDate.month, startDate.day),
-                             datetime.datetime(endDate.year, endDate.month, endDate.day), doc['date']):
+                        datetime.datetime(endDate.year, endDate.month, endDate.day), doc['date']):
                     topk_docs_date.append(doc)
 
             if len(topk_docs_date) == 0:
                 st.warning("No articles found in the date range, retrieving most relevant articles outside of date range.")
                 topk_docs_date = topk_docs
             topk_docs = topk_docs_date
+
+            # filter for docs with selected language
+            topk_docs_lang
+            for doc in topk_docs:
+                if checkLanguage(doc['language'], language_selection):
+                    topk_docs_lang.append(doc)
+            if len(topk_docs_lang) == 0:
+                topk_docs_lang = topk_docs
+            topk_docs = topk_docs_lang
             #topk_docs = topk_docs[:topk]
 
 
