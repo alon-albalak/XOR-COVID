@@ -109,15 +109,29 @@ def find_span(query,text):
         return best_span
     return None
 
+peraton_language_mapping = {
+    "spa": "Spanish",
+    "ger": "German",
+    "por": "Portuguese",
+    "fre": "French",
+    "tur": "Turkish",
+    "rus": "Russian",
+    "dut": "Dutch",
+    "ita": "Italian",
+    "pol": "Polish",
+    "slv": "Slovene",
+    "cze": "Czech",
+    "eng": "English",
+    "chi": "Chinese"
+}
+
 def checkLanguage(doc_language, language_selection):
     if "All" in language_selection:
         return True
-    elif doc_language in language_selection:
+    elif peraton_language_mapping[doc_language] in language_selection:
         return True
     else:
         return False
-
-
 
 if __name__ =='__main__':
 
@@ -178,11 +192,12 @@ if __name__ =='__main__':
             topk_docs = topk_docs_date
 
             # filter for docs with selected language
-            topk_docs_lang
+            topk_docs_lang = []
             for doc in topk_docs:
                 if checkLanguage(doc['language'], language_selection):
                     topk_docs_lang.append(doc)
             if len(topk_docs_lang) == 0:
+                st.warning("No matching articles with the selected language(s), retrieving most relevant articles from any language.")
                 topk_docs_lang = topk_docs
             topk_docs = topk_docs_lang
             #topk_docs = topk_docs[:topk]
