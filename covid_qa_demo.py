@@ -30,7 +30,8 @@ import torch
 import faiss
 from models.bert_retriever import BERTEncoder
 from indexes import Extract_Index
-from transformers import AutoConfig, AutoTokenizer, AutoModelForQuestionAnswering, default_data_collator
+from transformers import AutoConfig, AutoTokenizer, AutoModelForQuestionAnswering, default_data_collator, \
+                        MarianMTModel, MarianTokenizer
 from utils.torch_utils import load_saved, move_to_cuda
 from qa.utils_qa import postprocess_qa_predictions
 from qa.trainer_qa import QuestionAnsweringTrainer
@@ -102,6 +103,27 @@ def init_reader():
     print("Done...")
     return qa_model, qa_tokenizer
 
+
+translation_model_names = {
+    "Spanish":"Helsinki-NLP/opus-mt-es-en",
+    "Chinese":"Helsinki-NLP/opus-mt-zh-en"
+    }
+@st.cache(allow_output_mutation=True)
+def init_translator():
+    print("initializing translators...")
+    mt_tokenizer_es = MarianTokenizer.from_pretrained(translation_model_names["Spanish"])
+    mt_model_es = MarianMTModel.from_pretrained(translation_model_names["Spanish"])
+    mt_model_es.to(cuda)
+    mt_model_es.eval()
+
+    mt_tokenizer_zh = MarianTokenizer.from_pretrained(translation_model_names["Chinese"])
+    mt_model_zh = MarianMTModel.from_pretrained(translation_model_names["Chinese"])
+    mt_model_zh.to(cuda)
+    mt_model_zh.eval()
+
+    print("Done...")
+    return mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh
+
 def find_span(query,text):
     best_span, best_score = find_closest_span_match(
         text, query)
@@ -137,8 +159,8 @@ if __name__ =='__main__':
 
     dense_index_path = args.index_path
     model, tokenizer, index, corpus = init_dense(dense_index_path)
-
     qa_model, qa_tokenizer = init_reader()
+    mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh = init_translator()
     dateFlag = False
     local_css(style_path)
     analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '10', '20'])
@@ -365,6 +387,11 @@ if __name__ =='__main__':
             st.markdown(f'## **Top {analysisInt} Retrieved Articles**')
         counter = 1
         for count,doc in enumerate(topk_docs[:analysisInt]):
+            translation = ""
+            if doc["language"] == "spa":
+                translation = mt_model_es.generate(**mt_tokenizer_es(answers[count], return_tensors="pt"))
+            if doc["language"] == "chi":
+                translation = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], return_tensors="pt"))
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
                 st.markdown('**Language:** {}'.format(doc['language']))
