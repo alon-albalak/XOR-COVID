@@ -228,6 +228,7 @@ if __name__ =='__main__':
 
 
 
+            answer_contexts = []
             answers = []
 
             doc_probs = []
@@ -338,7 +339,7 @@ if __name__ =='__main__':
                         answer_pairs.append((pred["start_index"], pred["end_index"]))
 
                 answer_pairs.sort()
-                answer = qa_tokenizer.decode(input_ids[answer_start:answer_end],skip_special_tokens=True)
+                # answer = qa_tokenizer.decode(input_ids[answer_start:answer_end],skip_special_tokens=True)
 
                 #get positions of start and end tokens in text string
                 full_text = qa_tokenizer.decode(input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)
@@ -362,12 +363,15 @@ if __name__ =='__main__':
                 #add the highlight commands to the text so that the answer spans are highlighted in red
                 curr_tok = 0
                 with_highlight = ""
+                highlighted_answers = []
                 for (start_tok,end_tok) in answer_tok_indices:
+                    highlighted_answers.append(full_text[start_tok:end_tok])
                     with_highlight += full_text[curr_tok:start_tok] + start_highlight + full_text[start_tok:end_tok] + end_highlight
                     curr_tok = end_tok
                 with_highlight += full_text[curr_tok:]
 
-                answers.append(with_highlight[len(query_decoded):])
+                answer_contexts.append(with_highlight[len(query_decoded):])
+                answers.append(highlighted_answers)
                 scores = np.array([pred.pop("score") for pred in predictions])
                 exp_scores = np.exp(scores - np.max(scores))
                 probs = exp_scores / exp_scores.sum()
@@ -375,10 +379,10 @@ if __name__ =='__main__':
 
 
         #reorder documents based on highest answer confidence for each document
-        zipped = list(zip(doc_probs,answers,topk_docs))
+        zipped = list(zip(doc_probs,answer_contexts,answers,topk_docs))
         zipped.sort(key=lambda x: x[0])
         zipped.reverse()
-        doc_probs, answers, topk_docs = zip(*zipped)
+        doc_probs, answer_contexts, answers, topk_docs = zip(*zipped)
 
         #present documents and highlighted answers to users
         if len(topk_docs[:analysisInt]) == 1:
@@ -387,22 +391,25 @@ if __name__ =='__main__':
             st.markdown(f'## **Top {analysisInt} Retrieved Articles**')
         counter = 1
         for count,doc in enumerate(topk_docs[:analysisInt]):
-            translation = ""
+            translated_answers = []
             if doc["language"] == "spa":
-                translation = mt_model_es.generate(**mt_tokenizer_es(answers[count], return_tensors="pt")).to(cuda)
-                translation = mt_tokenizer_es.decode(translation[0], skip_special_tokens=True)
+                translations = mt_model_es.generate(**mt_tokenizer_es(answers[count], padding=True, return_tensors="pt").to(cuda))
+                for translation in translations:
+                    translated_answers.append(mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True))
             if doc["language"] == "chi":
-                translation = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], return_tensors="pt")).to(cuda)
-                translation = mt_tokenizer_zh.decode(translation[0], skip_special_tokens=True)
+                translations = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], padding=True, return_tensors="pt").to(cuda))
+                for translation in translations:
+                    translated_answers.append(mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True))
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
                 st.markdown('**Language:** {}'.format(doc['language']))
-                st.markdown('**Text**')
-                new_text = answers[count]
+                st.markdown('**Journal Text**')
+                new_text = answer_contexts[count]
                 st.markdown("{}".format(new_text),unsafe_allow_html=True)
-                if translation:
+                if translated_answers:
                     st.markdown("**English Translation**")
-                    st.markdown("{}".format(translation))
+                    for translated_answer in translated_answers:
+                        st.markdown("{}".format(translated_answer))
             counter += 1
 
 
