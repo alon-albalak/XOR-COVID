@@ -156,8 +156,9 @@ if __name__ =='__main__':
             curr_count = 2048
             distances, indices = index.search(curr_count, q_embeds_numpy)
             top_doc_ids = indices[0]
-            topk_docs = [{"title": corpus[str(doc_id)][0], "text": corpus[str(
-                doc_id)][1], "date": corpus[str(doc_id)][4], "journal": corpus[str(doc_id)][5]} for doc_id in top_doc_ids]
+            topk_docs = [{"title": corpus[str(doc_id)][0], "text": corpus[str(doc_id)][1],
+                "date": corpus[str(doc_id)][4], "journal": corpus[str(doc_id)][5], 
+                "language": corpus[str(doc_id)][7]} for doc_id in top_doc_ids]
             topk_docs_date = []
             for doc in topk_docs:
                 if checkDate(datetime.datetime(startDate.year, startDate.month, startDate.day),
@@ -335,6 +336,7 @@ if __name__ =='__main__':
         for count,doc in enumerate(topk_docs[:analysisInt]):
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
+                st.markdown('**Language:** {}'.format(doc['language']))
                 st.markdown('**Text**')
                 new_text = answers[count]
                 st.markdown("{}".format(new_text),unsafe_allow_html=True)
