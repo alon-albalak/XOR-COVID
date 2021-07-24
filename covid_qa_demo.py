@@ -398,6 +398,9 @@ if __name__ =='__main__':
                 st.markdown('**Text**')
                 new_text = answers[count]
                 st.markdown("{}".format(new_text),unsafe_allow_html=True)
+                if translation:
+                    st.markdown("**English Translation**")
+                    st.markdown("{}".format(translation))
             counter += 1
 
 
