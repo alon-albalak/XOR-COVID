@@ -389,10 +389,10 @@ if __name__ =='__main__':
         for count,doc in enumerate(topk_docs[:analysisInt]):
             translation = ""
             if doc["language"] == "spa":
-                translation = mt_model_es.generate(**mt_tokenizer_es(answers[count], return_tensors="pt"))
+                translation = mt_model_es.generate(**mt_tokenizer_es(answers[count], return_tensors="pt")).to(cuda)
                 translation = mt_tokenizer_es.decode(translation[0], skip_special_tokens=True)
             if doc["language"] == "chi":
-                translation = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], return_tensors="pt"))
+                translation = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], return_tensors="pt")).to(cuda)
                 translation = mt_tokenizer_zh.decode(translation[0], skip_special_tokens=True)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
