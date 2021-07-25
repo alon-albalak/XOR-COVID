@@ -10,12 +10,14 @@
 }
 .blue {
   background-color: cyan;
+  color: black;
 }
 .red {
   background-color: #ff4c62;
 }
 .yellow {
   background-color: yellow;
+  color: black;
 }
 .orange {
   background-color: orange;

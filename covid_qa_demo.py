@@ -230,7 +230,7 @@ if __name__ =='__main__':
 
 
 
-
+            contexts = []
             answer_contexts = []
             answers = []
 
@@ -375,6 +375,7 @@ if __name__ =='__main__':
                 exp_scores = np.exp(scores - np.max(scores))
                 probs = exp_scores / exp_scores.sum()
                 doc_probs.append(probs[0])
+                contexts.append(doc["text"])
 
 
         #reorder documents based on highest answer confidence for each document
@@ -406,11 +407,13 @@ if __name__ =='__main__':
                 st.markdown('**Language:** {}'.format(doc['language']))
                 st.markdown('**Journal Text**')
                 new_text = answer_contexts[count]
-                st.markdown("{}".format(new_text),unsafe_allow_html=True)
+                # st.markdown("{}".format(new_text),unsafe_allow_html=True)
+                st.text("{}".format(new_text))
                 if translated_answers:
                     st.markdown("**English Translation**")
                     for translated_answer in translated_answers:
-                        st.markdown("{}".format(translated_answer))
+                        # st.markdown("{}".format(translated_answer,unsafe_allow_html=True))
+                        st.text("{}".format(translated_answer))
             counter += 1
 
 
