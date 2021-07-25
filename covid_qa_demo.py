@@ -50,8 +50,6 @@ parser.add_argument('--index-path', type=str)
 
 args = parser.parse_args()
 
-st.beta_set_page_config(layout="wide")
-
 chosen_model_dense = args.retriever_model_name
 chosen_model_reader = args.qa_model_name
 reader_path = args.qa_model_name
@@ -405,17 +403,20 @@ if __name__ =='__main__':
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
-                st.markdown('**Title:** {}'.format(doc['title']))
-                st.markdown('**Language:** {}'.format(doc['language']))
-                st.markdown('**Journal Text**')
-                new_text = answer_contexts[count]
-                st.markdown("{}".format(new_text),unsafe_allow_html=True)
+                col1 = st.beta_columns(1)
                 if translated_answers:
-                    st.markdown("**English Translation**")
+                    col1, col2 = st.beta_columns(2)
+                col1.markdown('**Title:** {}'.format(doc['title']))
+                col1.markdown('**Language:** {}'.format(doc['language']))
+                col1.markdown('**Journal Text**')
+                new_text = answer_contexts[count]
+                col1.markdown("{}".format(new_text),unsafe_allow_html=True)
+                if translated_answers:
+                    col2.markdown("**English Translation**")
                     for translated_answer in translated_answers:
-                        st.markdown("{}".format(translated_answer),unsafe_allow_html=True)
-                    st.markdown("**Full Translation**")
-                    st.markdown("{}".format(translated_doc))
+                        col2.markdown("{}".format(translated_answer),unsafe_allow_html=True)
+                    col2.markdown("**Full Translation**")
+                    col2.markdown("{}".format(translated_doc))
             counter += 1
 
 
