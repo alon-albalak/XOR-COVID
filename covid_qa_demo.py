@@ -395,12 +395,12 @@ if __name__ =='__main__':
             if doc["language"] == "spa":
                 translations = mt_model_es.generate(**mt_tokenizer_es(answers[count], padding=True, return_tensors="pt").to(cuda))
                 for i, translation in enumerate(translations):
-                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answer = start_highlight.format(highlight_colors[i]) +" "+ mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) +" "+ end_highlight
                     translated_answers.append(translated_answer)
             if doc["language"] == "chi":
                 translations = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], padding=True, return_tensors="pt").to(cuda))
                 for translation in translations:
-                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answer = start_highlight.format(highlight_colors[i]) +" "+ mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) +" "+ end_highlight
                     translated_answers.append(translated_answer)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
