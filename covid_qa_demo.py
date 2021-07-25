@@ -230,7 +230,6 @@ if __name__ =='__main__':
 
 
 
-            contexts = []
             answer_contexts = []
             answers = []
 
@@ -375,7 +374,6 @@ if __name__ =='__main__':
                 exp_scores = np.exp(scores - np.max(scores))
                 probs = exp_scores / exp_scores.sum()
                 doc_probs.append(probs[0])
-                contexts.append(doc["text"])
 
 
         #reorder documents based on highest answer confidence for each document
@@ -393,13 +391,14 @@ if __name__ =='__main__':
         for count,doc in enumerate(topk_docs[:analysisInt]):
             translated_answers = []
             if doc["language"] == "spa":
-                translations = mt_model_es.generate(**mt_tokenizer_es(answers[count], padding=True, return_tensors="pt").to(cuda))
-                for i, translation in enumerate(translations):
+
+                translations = mt_model_es.generate(**mt_tokenizer_es(doc["text"]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             if doc["language"] == "chi":
-                translations = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], padding=True, return_tensors="pt").to(cuda))
-                for i, translation in enumerate(translations):
+                translations = mt_model_zh.generate(**mt_tokenizer_zh(doc["text"]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
@@ -412,6 +411,8 @@ if __name__ =='__main__':
                     st.markdown("**English Translation**")
                     for translated_answer in translated_answers:
                         st.markdown("{}".format(translated_answer),unsafe_allow_html=True)
+                    st.markdown("**Full Translation**")
+                    st.markdown("{}".format(translations[0]))
             counter += 1
 
 
