@@ -9,8 +9,14 @@
   font-weight: 700;
 }
 .blue {
-  background-color: lightcyan;
+  background-color: cyan;
 }
 .red {
   background-color: #ff4c62;
+}
+.yellow {
+  background-color: yellow;
+}
+.orange {
+  background-color: orange;
 }
