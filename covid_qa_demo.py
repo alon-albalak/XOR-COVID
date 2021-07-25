@@ -407,13 +407,11 @@ if __name__ =='__main__':
                 st.markdown('**Language:** {}'.format(doc['language']))
                 st.markdown('**Journal Text**')
                 new_text = answer_contexts[count]
-                # st.markdown("{}".format(new_text),unsafe_allow_html=True)
-                st.text("{}".format(new_text))
+                st.markdown("{}".format(new_text),unsafe_allow_html=True)
                 if translated_answers:
                     st.markdown("**English Translation**")
                     for translated_answer in translated_answers:
-                        # st.markdown("{}".format(translated_answer,unsafe_allow_html=True))
-                        st.text("{}".format(translated_answer))
+                        st.markdown("{}".format(translated_answer,unsafe_allow_html=True))
             counter += 1
 
 
