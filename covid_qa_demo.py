@@ -392,13 +392,13 @@ if __name__ =='__main__':
         for count,doc in enumerate(topk_docs[:analysisInt]):
             translated_answers = []
             if doc["language"] == "spa":
-                translations = mt_model_es.generate(**mt_tokenizer_es([doc["text"]]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                translations = mt_model_es.generate(**mt_tokenizer_es([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
                 translated_doc=mt_tokenizer_es.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             if doc["language"] == "chi":
-                translations = mt_model_zh.generate(**mt_tokenizer_zh([doc["text"]]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                translations = mt_model_zh.generate(**mt_tokenizer_zh([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
                 translated_doc = mt_tokenizer_zh.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
