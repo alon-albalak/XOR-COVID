@@ -56,7 +56,7 @@ reader_path = args.qa_model_name
 max_answer_length = 30
 
 cuda = torch.device('cuda')
-highlight_colors = ["red","blue","orange", "yellow"]
+highlight_colors = ["red","blue","orange", "yellow", "purple", "green"]
 start_highlight = "<span class ='highlight {}'>"
 end_highlight = "</span>"
 
@@ -405,12 +405,11 @@ if __name__ =='__main__':
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 cols = st.beta_columns(2) if translated_answers else st.beta_columns(1)
                 cols[0].markdown('**Title:** {}'.format(doc['title']))
-                cols[0].markdown('**Language:** {}'.format(doc['language']))
                 cols[0].markdown('**Journal Text**')
                 new_text = answer_contexts[count]
                 cols[0].markdown("{}".format(new_text),unsafe_allow_html=True)
                 if translated_answers:
-                    cols[1].markdown("**English Translation**")
+                    cols[1].markdown("**Answer Translation**")
                     for translated_answer in translated_answers:
                         cols[1].markdown("{}".format(translated_answer),unsafe_allow_html=True)
                     cols[1].markdown("**Full Translation**")

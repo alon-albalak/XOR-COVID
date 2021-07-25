@@ -1,7 +1,7 @@
 .highlight {
-  border-radius: 0.4rem;
+  border-radius: 0.3rem;
   color: white;
-  padding: 0.5rem;
+  padding: 0.4rem;
   margin-bottom: 1rem;
 }
 .bold {
@@ -21,4 +21,10 @@
 }
 .orange {
   background-color: orange;
+}
+.purple {
+  background-color: purple;
+}
+.green {
+  background-color: green;
 }
