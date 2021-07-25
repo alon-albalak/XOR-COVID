@@ -56,6 +56,9 @@ reader_path = args.qa_model_name
 max_answer_length = 30
 
 cuda = torch.device('cuda')
+highlight_colors = ["red","blue","orange", "yellow"]
+start_highlight = "<span class ='highlight {}'>"
+end_highlight = "</span>"
 
 if os.path.isfile("style.css"):
     style_path="style.css"
@@ -356,17 +359,13 @@ if __name__ =='__main__':
                             break
                     answer_tok_indices.append((pair_start_len,pair_end_len))
 
-
-                start_highlight = "<span class ='highlight red'>"
-                end_highlight = "</span>"
-
                 #add the highlight commands to the text so that the answer spans are highlighted in red
                 curr_tok = 0
                 with_highlight = ""
                 highlighted_answers = []
-                for (start_tok,end_tok) in answer_tok_indices:
+                for i, (start_tok,end_tok) in enumerate(answer_tok_indices):
                     highlighted_answers.append(full_text[start_tok:end_tok])
-                    with_highlight += full_text[curr_tok:start_tok] + start_highlight + full_text[start_tok:end_tok] + end_highlight
+                    with_highlight += full_text[curr_tok:start_tok] + start_highlight.format(highlight_colors[i]) + full_text[start_tok:end_tok] + end_highlight
                     curr_tok = end_tok
                 with_highlight += full_text[curr_tok:]
 
@@ -394,12 +393,14 @@ if __name__ =='__main__':
             translated_answers = []
             if doc["language"] == "spa":
                 translations = mt_model_es.generate(**mt_tokenizer_es(answers[count], padding=True, return_tensors="pt").to(cuda))
-                for translation in translations:
-                    translated_answers.append(mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True))
+                for i, translation in enumerate(translations):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
             if doc["language"] == "chi":
                 translations = mt_model_zh.generate(**mt_tokenizer_zh(answers[count], padding=True, return_tensors="pt").to(cuda))
                 for translation in translations:
-                    translated_answers.append(mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True))
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
                 st.markdown('**Title:** {}'.format(doc['title']))
                 st.markdown('**Language:** {}'.format(doc['language']))
