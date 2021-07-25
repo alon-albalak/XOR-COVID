@@ -403,20 +403,18 @@ if __name__ =='__main__':
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
-                col1 = st.beta_columns(1)
-                if translated_answers:
-                    col1, col2 = st.beta_columns(2)
-                col1.markdown('**Title:** {}'.format(doc['title']))
-                col1.markdown('**Language:** {}'.format(doc['language']))
-                col1.markdown('**Journal Text**')
+                cols = st.beta_columns(2) if translated_answers else st.beta_columns(1)
+                cols[0].markdown('**Title:** {}'.format(doc['title']))
+                cols[0].markdown('**Language:** {}'.format(doc['language']))
+                cols[0].markdown('**Journal Text**')
                 new_text = answer_contexts[count]
-                col1.markdown("{}".format(new_text),unsafe_allow_html=True)
+                cols[0].markdown("{}".format(new_text),unsafe_allow_html=True)
                 if translated_answers:
-                    col2.markdown("**English Translation**")
+                    cols[1].markdown("**English Translation**")
                     for translated_answer in translated_answers:
-                        col2.markdown("{}".format(translated_answer),unsafe_allow_html=True)
-                    col2.markdown("**Full Translation**")
-                    col2.markdown("{}".format(translated_doc))
+                        cols[1].markdown("{}".format(translated_answer),unsafe_allow_html=True)
+                    cols[1].markdown("**Full Translation**")
+                    cols[1].markdown("{}".format(translated_doc))
             counter += 1
 
 
