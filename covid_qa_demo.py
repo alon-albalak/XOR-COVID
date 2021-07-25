@@ -50,6 +50,8 @@ parser.add_argument('--index-path', type=str)
 
 args = parser.parse_args()
 
+st.beta_set_page_config(layout="wide")
+
 chosen_model_dense = args.retriever_model_name
 chosen_model_reader = args.qa_model_name
 reader_path = args.qa_model_name
@@ -393,11 +395,13 @@ if __name__ =='__main__':
             if doc["language"] == "spa":
 
                 translations = mt_model_es.generate(**mt_tokenizer_es(doc["text"]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                translated_doc=mt_tokenizer_es.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_es.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
             if doc["language"] == "chi":
                 translations = mt_model_zh.generate(**mt_tokenizer_zh(doc["text"]+answers[count], padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_zh.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
@@ -412,7 +416,7 @@ if __name__ =='__main__':
                     for translated_answer in translated_answers:
                         st.markdown("{}".format(translated_answer),unsafe_allow_html=True)
                     st.markdown("**Full Translation**")
-                    st.markdown("{}".format(translations[0]))
+                    st.markdown("{}".format(translated_doc))
             counter += 1
 
 
