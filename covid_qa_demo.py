@@ -184,7 +184,7 @@ if __name__ =='__main__':
         unsafe_allow_html=True, )
     st.title("Ask any question about COVID-19!")
 
-    query = st.text_input('Enter your question')
+    query = st.text_input('Enter your question in ANY language')
 
     if query:
 
