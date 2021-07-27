@@ -52,7 +52,7 @@
     {
         "q": "¿Pueden las mujeres embarazadas transmitir la covid a su hijo?",
         "a": "No hay evidencia de transmisión de madre a hijo",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿Covid aumenta el riesgo de preeclampsia?",
@@ -62,37 +62,67 @@
     {
         "q": "¿Se puede transmitir el covid a través de la leche materna?",
         "a": "En estudios de leche materna de mujeres infectadas no se ha detectado el virus",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿Es la diabetes un factor de riesgo para el coronavirus?",
         "a": "diabetes mellitus (DM) es un factor de riesgo",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿Qué proporción de pacientes con obesidad grave necesita ventilación mecánica invasiva?",
         "a": "85.7%",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿Cómo afecta el covid a los pacientes con enfermedad renal?",
         "a": "Covid-19  puede  empeorar  la  alteración  de  la  función  renal y llevar a un rápido deterioro",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿La EPOC aumenta el riesgo de covid grave?",
         "a": "enfermedad pulmonar crónica (EPOC) mostró un aumento de cuatro veces  el  riesgo  de  desarrollar  Covid-19  severo",
-        "a_source": "es-0007"
+        "a_source":"es-0007"
     },
     {
         "q": "¿Cuál es el efecto de la ERC en pacientes con SARS-CoV-2?",
         "a": "El  riesgo  de  muertefue  mayor",
-        "a_source": "es-0008"
+        "a_source":"es-0008"
     },
     {
         "q": "¿Qué sistema es la causa más frecuente de ingreso hospitalario?",
         "a": "La infección por SARS-CoV-2 se manifiesta tempranamente en el sistema pulmonar y es la causa más frecuente de admisión hospitalaria",
-        "a_source": "es-0008"
+        "a_source":"es-0008"
+    },
+    {
+        "q": "¿Se puede transmitir el SARS-CoV-2 a través de superficies públicas?",
+        "a": "a presencia de virus en superficies públicas, aguas residuales y áreas exteriores no fue indicativa de transmisión.",
+        "a_source": "es-0009"
+    },
+    {
+        "q": "¿Cuál es el período de incubación del virus?",
+        "a": "La incubación de este virus puede durar de 1 a 14 días",
+        "a_source":"es-0009"
+    },
+    {
+        "q": "¿Cuáles son algunas medidas de mitigación para covid?",
+        "a": "A nivel poblacional las medidas de mitigación incluyeron normas de distanciamiento social, lavado frecuente de manos, cierre de actividades no esenciales y escuelas, restricción de viajes, cancelación de eventos públicos masivos y acceso limitado o restringido a espacios públicos.",
+        "a_source": "es-0009"
+    },
+    {
+        "q": "¿Cuáles son algunos de los resultados neonatales causados ​​por covid?",
+        "a": "Los eventos neonatales comunes fueron bajo peso y prematuridad; se identificaron neonatos SARS-CoV-2 positivos",
+        "a_source": "es-0010"
+    },
+    {
+        "q": "¿Cuál es la frecuencia de complicaciones posparto en mujeres con covid-19?",
+        "a": "Las complicaciones en el postparto como hemorragia y atonía uterina se reportaron en 32%",
+        "a_source":"es-0010"
+    },
+    {
+        "q": "¿Qué porcentaje de nacimientos fueron prematuros en mujeres con SARS-CoV-2?",
+        "a": "Los eventos más frecuentes fueron bajo peso al nacer (<2 500g; 29% de 213), nacimiento pretérmino (<37 SDG: 30% de 566) y sufrimiento fetal (18% de 257)",
+        "a_source": "es-0010"
     },
     {
         "q": "¿Qué porcentaje de pacientes con apendicitis tuvieron apendicitis gangrenosa durante la pandemia?",
