@@ -81,7 +81,7 @@ def main():
     parser.add_argument('--db_path', type=str, required=True,
                         help='Path to sqlite db holding document texts')
     parser.add_argument('--config_folder', type=str, required=True,
-                        help='path to the congig file')
+                        help='path to the config folder')
     parser.add_argument('--port', type=int, required=True)
     parser.add_argument('--index_prefix', type=str, required=True)
 

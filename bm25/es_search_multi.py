@@ -13,8 +13,8 @@ import nltk
 import numpy as np
 import torch
 from sentence_transformers import SentenceTransformer, util
-# modelTransf = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
-modelTransf = SentenceTransformer("bert-base-nli-mean-tokens")
+modelTransf = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
+# modelTransf = SentenceTransformer("bert-base-nli-mean-tokens")
 
 from utils import peraton_lang_id_to_ISO6391
 LANGS=peraton_lang_id_to_ISO6391.values()
@@ -85,17 +85,16 @@ def cosine_similar(query_embedding, corpus_embeddings):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--index_name_prefix', type=str, required=True,
-                        help='Path to index')
-    parser.add_argument('--input_data_file_name', type=str, required=True)
-    parser.add_argument('--port', type=int, required=True)
+    parser.add_argument('--index_prefix', type=str, help='Path to index')
+    parser.add_argument('--input_data_file_name', type=str)
+    parser.add_argument('--port', type=int)
     parser.add_argument('--output_fp', type=str)
 
     args = parser.parse_args()
 
-    # args.index_name_prefix="test_index"
-    # args.input_data_file_name="COUGH/retrieval_dev.txt"
-    # args.port=9200
+    args.index_prefix="peraton"
+    args.input_data_file_name="COUGH/retrieval_dev.txt"
+    args.port=9200
 
     results = {lang:[] for lang in LANGS}
     overall_results = []
@@ -115,39 +114,39 @@ def main():
             lang =  item["language"]
         else:
             lang = "en"
-        answer_embeddings = []
-        for answer in item["answers"]:
-            answer_embeddings.append(embed_sentences([answer]))
-        if lang not in LANGS:
-            continue
-        index_name = args.index_name_prefix + "_" + lang
-        res = search_es(es_obj=es, index_name=index_name, question_text=question, n_results=100)
-        # result[item["id"]] = {"hits": res["hits"]["hits"], "answers": item["answers"], "has_answer":False, "question": question}
-        for hit in res["hits"]["hits"]:
-            doc_sentence_tokenized = sentence_tokenize(hit["_source"]["document_text"], lang)
-            doc_embedding = embed_sentences(doc_sentence_tokenized)
-            over_threshold=False
-            for answer_embedding in answer_embeddings:
-                if cosine_similar(answer_embedding, doc_embedding):
-                    over_threshold = True
-                    break
-            topkF1.append(int(over_threshold))
+        # answer_embeddings = []
+        # for answer in item["answers"]:
+        #     answer_embeddings.append(embed_sentences([answer]))
+        # if lang not in LANGS:
+        #     continue
+        # index_name = args.index_prefix + "_" + lang
+        # res = search_es(es_obj=es, index_name=index_name, question_text=question, n_results=100)
+        # # result[item["id"]] = {"hits": res["hits"]["hits"], "answers": item["answers"], "has_answer":False, "question": question}
+        # for hit in res["hits"]["hits"]:
+        #     doc_sentence_tokenized = sentence_tokenize(hit["_source"]["document_text"], lang)
+        #     doc_embedding = embed_sentences(doc_sentence_tokenized)
+        #     over_threshold=False
+        #     for answer_embedding in answer_embeddings:
+        #         if cosine_similar(answer_embedding, doc_embedding):
+        #             over_threshold = True
+        #             break
+        #     topkF1.append(int(over_threshold))
             
             
-        results[lang].append({
-            "F1@1": int(np.sum(topkF1[:1])>0),
-            "F1@5": int(np.sum(topkF1[:5])>0),
-            "F1@20": int(np.sum(topkF1[:20])>0),
-            "F1@50": int(np.sum(topkF1[:50])>0),
-            "F1@100": int(np.sum(topkF1[:100])>0),
-        })
-        overall_results.append({
-            "F1@1": int(np.sum(topkF1[:1])>0),
-            "F1@5": int(np.sum(topkF1[:5])>0),
-            "F1@20": int(np.sum(topkF1[:20])>0),
-            "F1@50": int(np.sum(topkF1[:50])>0),
-            "F1@100": int(np.sum(topkF1[:100])>0),
-        })
+        # results[lang].append({
+        #     "F1@1": int(np.sum(topkF1[:1])>0),
+        #     "F1@5": int(np.sum(topkF1[:5])>0),
+        #     "F1@20": int(np.sum(topkF1[:20])>0),
+        #     "F1@50": int(np.sum(topkF1[:50])>0),
+        #     "F1@100": int(np.sum(topkF1[:100])>0),
+        # })
+        # overall_results.append({
+        #     "F1@1": int(np.sum(topkF1[:1])>0),
+        #     "F1@5": int(np.sum(topkF1[:5])>0),
+        #     "F1@20": int(np.sum(topkF1[:20])>0),
+        #     "F1@50": int(np.sum(topkF1[:50])>0),
+        #     "F1@100": int(np.sum(topkF1[:100])>0),
+        # })
             # answers = [{"text": answer, "answer_start": hit["_source"]["document_text"].find(answer)} for answer in item["answers"]]
             # squad_example = {'context': hit["_source"]["document_text"],
             #                 'qas': [{'question': question, 'is_impossible': False,
