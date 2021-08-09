@@ -138,14 +138,6 @@ def main():
                     break
             topkF1.append(int(over_threshold))
             
-            
-        results[lang].append({
-            "F1@1": int(np.sum(topkF1[:1])>0),
-            "F1@5": int(np.sum(topkF1[:5])>0),
-            "F1@20": int(np.sum(topkF1[:20])>0),
-            "F1@50": int(np.sum(topkF1[:50])>0),
-            "F1@100": int(np.sum(topkF1[:100])>0),
-        })
         overall_results.append({
             "F1@1": int(np.sum(topkF1[:1])>0),
             "F1@5": int(np.sum(topkF1[:5])>0),
@@ -153,19 +145,6 @@ def main():
             "F1@50": int(np.sum(topkF1[:50])>0),
             "F1@100": int(np.sum(topkF1[:100])>0),
         })
-
-
-    for lang in results:
-        print(f"{lang.upper()} RESULTS")
-        aggregate = defaultdict(list)
-        for r in results[lang]:
-            for k, v in r.items():
-                aggregate[k].append(v)
-
-        for k in aggregate:
-            results[lang] = aggregate[k]
-            print('{}: {} ...'.format(
-                k, np.mean(results[lang])))
 
     print("OVERALL RESULTS")
     aggregate = defaultdict(list)
