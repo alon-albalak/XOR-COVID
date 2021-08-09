@@ -2,6 +2,9 @@
 
 ### The code found here has been adopted from [this repo by Akari Asai](https://github.com/AkariAsai/XORQA/tree/main/baselines/bm25)
 
+## Translate all COUGH questions into other languages
+From utils directory, use the function cough_utils.translate_COUGH_questions to translate the COUGH dataset
+
 ## Install and set up Elastic Search
 
 ### Create new environment and install requirements
@@ -28,7 +31,5 @@ python3 -m nltk.downloader "punkt"
 `python3 build_es.py --db_path=/path/to/your/db.db --config_folder=/path/to/configs --port=9200 --index_prefix=/your/index/name`
 
 3. Search documents based on BM25 score
-
-This function will translate all questions into all languages in the databases and aggregate BM25 search results across all languages
 
 `python3 es_search_multi.py --index_prefix=/your/index/name --input_data_file_name=/path/to/your/retrieval/data.txt --port=9200`

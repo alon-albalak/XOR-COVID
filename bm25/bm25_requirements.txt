@@ -10,4 +10,3 @@ jsonlines==2.0.0
 nltk==3.5
 torch==1.8.1
 sentence-transformers==2.0.0
-textblob==0.15.3
