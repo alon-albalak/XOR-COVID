@@ -1,4 +1,4 @@
-# Open-Domain Question Answering for COVID-19 (Phase A)
+# Multi- and Cross-lingual Open-Domain Question Answering for COVID-19 (Phase B)
 
 This repository contains the source code for an end-to-end open-domain multi-lingual question answering system. The system is made up of two components: a retriever model and a reading comprehension (question answering) model. We provide the code for these two models in addition to demo code based on Streamlit. 
 
