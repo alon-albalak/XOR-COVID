@@ -9,3 +9,4 @@ peraton*
 *.7z
 *venv
 bm25/external_tools
+multilingual_covidQA/
