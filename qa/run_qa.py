@@ -575,8 +575,11 @@ def main():
                 final_preds.append(max_pred)
             else:
                 final_preds.append(v[0])
-        print("NUMBER OF SAMPLES: {}".format(len(final_references)))
-        return metric.compute(predictions=final_preds, references=final_references)
+        computed_metrics = metric.compute(predictions=final_preds, references=final_references)
+        eval_metrics = {}
+        for k, v in computed_metrics.items():
+            eval_metrics[f"eval_{k}"] = v
+        return eval_metrics
 
     # Initialize our Trainer
     trainer = QuestionAnsweringTrainer(

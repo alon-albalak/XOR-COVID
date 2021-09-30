@@ -144,16 +144,16 @@ def get_score(answer_doc, topk=20):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('raw_data', type=str, default=None, help='query data')
-    parser.add_argument('encode_corpus_path', type=str, default='./encoded/bart_aug')
+    parser.add_argument('--raw_data', type=str, default=None, help='query data')
+    parser.add_argument('--encode_corpus_path', type=str, default='./encoded/bart_aug')
     parser.add_argument('--model_path', type=str, default=None, help="pretrained retriever checjpoint")
-    parser.add_argument('--batch-size', type=int, default=100)
+    parser.add_argument('--batch_size', type=int, default=100)
     parser.add_argument('--topk', type=int, default=100)
-    parser.add_argument('--max-q-len', type=int, default=50)
-    parser.add_argument('--model-name', type=str, default='facebook/bart-base')
-    parser.add_argument("--save-pred", default="", type=str)
+    parser.add_argument('--max_q_len', type=int, default=50)
+    parser.add_argument('--model_name', type=str, default='facebook/bart-base')
+    parser.add_argument("--save_pred", default="", type=str)
     parser.add_argument("--dimension", default=768, type=int)
-    parser.add_argument('--index-type', type=str, default='exact')
+    parser.add_argument('--index_type', type=str, default='exact')
     parser.add_argument("--no_cuda", action="store_true")
     
     args = parser.parse_args()

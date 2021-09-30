@@ -43,11 +43,12 @@ from coqa_process.span_heuristic import find_closest_span_match
 
 #parse arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--retriever-model-name', type=str, default='microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext')
-parser.add_argument('--retriever-model', type=str)
-parser.add_argument('--qa-model-name', type=str, default='ktrapeznikov/biobert_v1.1_pubmed_squad_v2')
-parser.add_argument('--qa-model', type=str, default='ktrapeznikov/biobert_v1.1_pubmed_squad_v2')
-parser.add_argument('--index-path', type=str)
+parser.add_argument('--retriever_model_name', type=str, default='xlm-roberta-base')
+parser.add_argument('--retriever_model', type=str)
+parser.add_argument('--qa_model_name', type=str, default='alon-albalak/xlm-roberta-base-xquad')
+parser.add_argument('--qa_model', type=str, default='alon-albalak/xlm-roberta-base-xquad')
+parser.add_argument('--index_path', type=str)
+parser.add_argument('--dimension', type=int, default=768)
 
 args = parser.parse_args()
 
@@ -86,7 +87,7 @@ def init_dense(index_path):
     model.eval()
     embed_path = os.path.join(index_path, "embeds.npy")
     embeds = np.load(embed_path).astype('float32')
-    index = Extract_Index(embeds, gpu=True, dimension=768)
+    index = Extract_Index(embeds, gpu=True, dimension=args.dimension)
     corpus = json.load(open(os.path.join(index_path, 'id2doc.json')))
     print('Done...')
     return model, tokenizer, index, corpus
@@ -136,6 +137,7 @@ def find_span(query,text):
     return None
 
 peraton_language_mapping = {
+    "ara": "Arabic",
     "spa": "Spanish",
     "ger": "German",
     "por": "Portuguese",
