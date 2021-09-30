@@ -18,7 +18,7 @@ def load_csv_to_list(csv_path):
     return fields, rows
 
 
-def convert_COUGH_to_retrieval_dataset(data_path="COUGH/FAQ_Bank.csv", dev_percent=15, test_percent=15, neg_para_samples=30):
+def convert_COUGH_to_retrieval_dataset(data_path="COUGH/FAQ_Bank.csv", dev_percent=15, test_percent=15, neg_para_samples=30, seed=10):
     """
     converts the COUGH dataset into a .txt file with each line as a json object
     each line contains:
@@ -30,6 +30,7 @@ def convert_COUGH_to_retrieval_dataset(data_path="COUGH/FAQ_Bank.csv", dev_perce
         "neg_paras": list of dict [{"title":str,"text":str, "id":str},...],
     }
     """
+    random.seed(seed)
     COUGH_fields, COUGH_data = load_csv_to_list(data_path)
     lang_idx = COUGH_fields.index("language")
     train_subset, dev_subset, test_subset = [], [], []
@@ -101,13 +102,14 @@ def create_save_COUGH_retrieval_data(save_path="COUGH/", data_path="COUGH/FAQ_Ba
             file.write("\n")
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--save_path", type=str)
-parser.add_argument("--data_path", type=str)
-parser.add_argument("--dev_percent", type=int, default=15)
-parser.add_argument("--test_percent", type=int, default=15)
-parser.add_argument("--neg_para_samples", type=int, default=30)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--save_path", type=str)
+    parser.add_argument("--data_path", type=str)
+    parser.add_argument("--dev_percent", type=int, default=15)
+    parser.add_argument("--test_percent", type=int, default=15)
+    parser.add_argument("--neg_para_samples", type=int, default=30)
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-create_save_COUGH_retrieval_data(args.save_path, args.data_path, args.dev_percent, args.test_percent, args.neg_para_samples)
+    create_save_COUGH_retrieval_data(args.save_path, args.data_path, args.dev_percent, args.test_percent, args.neg_para_samples)
