@@ -23,7 +23,8 @@ pip3 install \
     transformers==4.6.1 \
     datasets==1.5.0 \
     scipy==1.5.2 \
-    sentence-transformers==2.0.0
+    sentence-transformers==2.0.0 \
+    jsonlines==2.0.0
 
 
 CONDA:
@@ -31,3 +32,12 @@ conda install -c pytorch faiss-gpu==1.7.0
 
 NLTK:
 python3 -m nltk.downloader "punkt"
+
+
+NOTE:
+For CUDA toolkit 11.1, first install faiss-gpu and pytorch with:
+
+conda install -c conda-forge faiss-gpu cudatoolkit=11.1
+pip3 install torch==1.9.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+
+Then, install the remaining packages as usual
