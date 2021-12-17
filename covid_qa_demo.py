@@ -111,7 +111,14 @@ def init_reader():
 
 translation_model_names = {
     "Spanish":"Helsinki-NLP/opus-mt-es-en",
-    "Chinese":"Helsinki-NLP/opus-mt-zh-en"
+    "Chinese":"Helsinki-NLP/opus-mt-zh-en",
+    "French":"Helsinki-NLP/opus-mt-fr-en",
+    "German":"Helsinki-NLP/opus-mt-de-en",
+    "Russian":"Helsinki-NLP/opus-mt-ru-en",
+    "Polish":"Helsinki-NLP/opus-mt-pl-en",
+    "Turkish":"Helsinki-NLP/opus-mt-tr-en",
+    "Dutch":"Helsinki-NLP/opus-mt-nl-en",
+    "Czech":"Helsinki-NLP/opus-mt-cs-en"
     }
 @st.cache(allow_output_mutation=True)
 def init_translator():
@@ -126,8 +133,45 @@ def init_translator():
     mt_model_zh.to(cuda)
     mt_model_zh.eval()
 
+    mt_tokenizer_fr = MarianTokenizer.from_pretrained(translation_model_names["French"])
+    mt_model_fr = MarianMTModel.from_pretrained(translation_model_names["French"])
+    mt_model_fr.to(cuda)
+    mt_model_fr.eval()
+
+    mt_tokenizer_de = MarianTokenizer.from_pretrained(translation_model_names["German"])
+    mt_model_de = MarianMTModel.from_pretrained(translation_model_names["German"])
+    mt_model_de.to(cuda)
+    mt_model_de.eval()
+
+    mt_tokenizer_ru = MarianTokenizer.from_pretrained(translation_model_names["Russian"])
+    mt_model_ru = MarianMTModel.from_pretrained(translation_model_names["Russian"])
+    mt_model_ru.to(cuda)
+    mt_model_ru.eval()
+
+    mt_tokenizer_pl = MarianTokenizer.from_pretrained(translation_model_names["Polish"])
+    mt_model_pl = MarianMTModel.from_pretrained(translation_model_names["Polish"])
+    mt_model_pl.to(cuda)
+    mt_model_pl.eval()
+
+    mt_tokenizer_tr = MarianTokenizer.from_pretrained(translation_model_names["Turkish"])
+    mt_model_tr = MarianMTModel.from_pretrained(translation_model_names["Turkish"])
+    mt_model_tr.to(cuda)
+    mt_model_tr.eval()
+
+    mt_tokenizer_nl = MarianTokenizer.from_pretrained(translation_model_names["Dutch"])
+    mt_model_nl = MarianMTModel.from_pretrained(translation_model_names["Dutch"])
+    mt_model_nl.to(cuda)
+    mt_model_nl.eval()
+
+    mt_tokenizer_cs = MarianTokenizer.from_pretrained(translation_model_names["Czech"])
+    mt_model_cs = MarianMTModel.from_pretrained(translation_model_names["Czech"])
+    mt_model_cs.to(cuda)
+    mt_model_cs.eval()
+
     print("Done...")
-    return mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh
+    return mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh, mt_model_fr, mt_tokenizer_fr, mt_model_de, mt_tokenizer_de, \
+           mt_model_ru, mt_tokenizer_ru, mt_model_pl, mt_tokenizer_pl, mt_model_tr, mt_tokenizer_tr, mt_model_nl, mt_tokenizer_nl, \
+           mt_model_cs, mt_tokenizer_cs
 
 def find_span(query,text):
     best_span, best_score = find_closest_span_match(
@@ -156,7 +200,7 @@ peraton_language_mapping = {
 def checkLanguage(doc_language, language_selection):
     if "All" in language_selection:
         return True
-    elif peraton_language_mapping[doc_language] in language_selection:
+    elif doc_language in peraton_language_mapping and peraton_language_mapping[doc_language] in language_selection:
         return True
     else:
         return False
@@ -166,12 +210,14 @@ if __name__ =='__main__':
     dense_index_path = args.index_path
     model, tokenizer, index, corpus = init_dense(dense_index_path)
     qa_model, qa_tokenizer = init_reader()
-    mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh = init_translator()
+    mt_model_es, mt_tokenizer_es, mt_model_zh, mt_tokenizer_zh, mt_model_fr, mt_tokenizer_fr, mt_model_de, mt_tokenizer_de, \
+    mt_model_ru, mt_tokenizer_ru, mt_model_pl, mt_tokenizer_pl, mt_model_tr, mt_tokenizer_tr, mt_model_nl, mt_tokenizer_nl, \
+    mt_model_cs, mt_tokenizer_cs = init_translator()
     dateFlag = False
     local_css(style_path)
     analysis = st.sidebar.selectbox('Select number of articles', ['1', '2', '3', '4', '5', '10', '20'])
     analysisInt = int(analysis)
-    language_selection = st.sidebar.multiselect('Select one or more article languages', ['All','Chinese','English','Spanish'], default=['All'])
+    language_selection = st.sidebar.multiselect('Select one or more article languages', ['All','Chinese','English','Spanish','French','German','Russian','Polish','Turkish','Dutch','Czech'], default=['All'])
     if "All" in language_selection:
         language_selection=["All"]
     startDate = st.sidebar.date_input('start date', datetime.date.today())
@@ -186,7 +232,7 @@ if __name__ =='__main__':
         unsafe_allow_html=True, )
     st.title("Ask any question about COVID-19!")
 
-    query = st.text_input('Enter your question in ANY language')
+    query = st.text_input('Enter your question in English')
 
     if query:
 
@@ -250,27 +296,7 @@ if __name__ =='__main__':
             corpus = [x['text'] for x in topk_docs]
 
 
-            # TODO: If we want to cluster documents, need to use a multilingual cluster algorithm (eg. cluster in embedding space)
-            #cluster top 30 documents for retrieval diversity and extract top documents from each cluster
-            # vectorizer = TfidfVectorizer()
-            # X = vectorizer.fit_transform(corpus)
-            # num_clusters = min(len(topk_docs),3)
-            # kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(X)
-            # proportions = {0: 0, 1: 0, 2: 0}
-            # for label in kmeans.labels_:
-            #     proportions[label] += 1
-            # cluster_counts = {}
-            # for k,v in proportions.items():
-            #     cluster_counts[k] = math.ceil((v/num_docs) * 10)
-            # cluster_docs = []
-            # for i,doc in enumerate(topk_docs):
-            #     label = kmeans.labels_[i]
-            #     if cluster_counts[label] > 0:
-            #         cluster_counts[label] -= 1
-            #         cluster_docs.append(doc)
-            #     else:
-            #         continue
-            # topk_docs = cluster_docs
+
 
 
             for doc in topk_docs:
@@ -346,28 +372,29 @@ if __name__ =='__main__':
                 answer_pairs.sort()
                 # answer = qa_tokenizer.decode(input_ids[answer_start:answer_end],skip_special_tokens=True)
 
-                #get positions of start and end tokens in text string
+                # get positions of start and end tokens in text string
                 full_text = qa_tokenizer.decode(input_ids, skip_special_tokens=True, clean_up_tokenization_spaces=True)
                 answer_tok_indices = []
-                for (start_tok,end_tok) in answer_pairs:
+                for (start_tok, end_tok) in answer_pairs:
                     pair_start_len = len(qa_tokenizer.decode(input_ids[:start_tok], skip_special_tokens=True,
-                                            clean_up_tokenization_spaces=True))
-                    pair_end_len = len(qa_tokenizer.decode(input_ids[:end_tok], skip_special_tokens=True,
                                                              clean_up_tokenization_spaces=True))
+                    pair_end_len = len(qa_tokenizer.decode(input_ids[:end_tok], skip_special_tokens=True,
+                                                           clean_up_tokenization_spaces=True))
                     while pair_end_len < len(full_text):
                         if full_text[pair_end_len] != " ":
                             pair_end_len += 1
                         else:
                             break
-                    answer_tok_indices.append((pair_start_len,pair_end_len))
+                    answer_tok_indices.append((pair_start_len, pair_end_len))
 
-                #add the highlight commands to the text so that the answer spans are highlighted in red
+                # add the highlight commands to the text so that the answer spans are highlighted in red
                 curr_tok = 0
                 with_highlight = ""
                 highlighted_answers = []
-                for i, (start_tok,end_tok) in enumerate(answer_tok_indices):
+                for i, (start_tok, end_tok) in enumerate(answer_tok_indices):
                     highlighted_answers.append(full_text[start_tok:end_tok])
-                    with_highlight += full_text[curr_tok:start_tok] + start_highlight.format(highlight_colors[i]) + full_text[start_tok:end_tok] + end_highlight
+                    with_highlight += full_text[curr_tok:start_tok] + start_highlight.format(
+                        highlight_colors[i]) + full_text[start_tok:end_tok] + end_highlight
                     curr_tok = end_tok
                 with_highlight += full_text[curr_tok:]
 
@@ -378,20 +405,16 @@ if __name__ =='__main__':
                 probs = exp_scores / exp_scores.sum()
                 doc_probs.append(probs[0])
 
-
-        #reorder documents based on highest answer confidence for each document
-        zipped = list(zip(doc_probs,answer_contexts,answers,topk_docs))
+        # reorder documents based on highest answer confidence for each document
+        zipped = list(zip(doc_probs, answer_contexts, answers, topk_docs))
         zipped.sort(key=lambda x: x[0])
         zipped.reverse()
         doc_probs, answer_contexts, answers, topk_docs = zip(*zipped)
 
-        #present documents and highlighted answers to users
-        if len(topk_docs[:analysisInt]) == 1:
-            st.markdown(f'## **Top {analysisInt} Retrieved Article**')
-        else:
-            st.markdown(f'## **Top {analysisInt} Retrieved Articles**')
+        # present documents and highlighted answers to users
+        st.markdown(f'## **Top Retrieved Articles**')
         counter = 1
-        for count,doc in enumerate(topk_docs[:analysisInt]):
+        for count, doc in enumerate(topk_docs[:analysisInt]):
             translated_answers = []
             if doc["language"] == "spa":
                 translations = mt_model_es.generate(**mt_tokenizer_es([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
@@ -405,7 +428,49 @@ if __name__ =='__main__':
                 for i, translation in enumerate(translations[1:]):
                     translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_zh.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
                     translated_answers.append(translated_answer)
-            with st.beta_expander("{}, {}".format(doc['journal'], doc['date'])):
+            if doc["language"] == "fre":
+                translations = mt_model_fr.generate(**mt_tokenizer_fr([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_fr.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_fr.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "ger":
+                translations = mt_model_de.generate(**mt_tokenizer_de([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_de.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_de.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "rus":
+                translations = mt_model_ru.generate(**mt_tokenizer_ru([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_ru.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_ru.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "pol":
+                translations = mt_model_pl.generate(**mt_tokenizer_pl([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_pl.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_pl.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "tur":
+                translations = mt_model_tr.generate(**mt_tokenizer_tr([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_tr.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_tr.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "dut":
+                translations = mt_model_nl.generate(**mt_tokenizer_nl([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_nl.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_nl.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            if doc["language"] == "cze":
+                translations = mt_model_cs.generate(**mt_tokenizer_cs([doc["text"]]+answers[count], truncation=True, padding=True, return_tensors="pt").to(cuda))
+                translated_doc = mt_tokenizer_cs.decode(translations[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                for i, translation in enumerate(translations[1:]):
+                    translated_answer = start_highlight.format(highlight_colors[i]) + mt_tokenizer_cs.decode(translation, skip_special_tokens=True, clean_up_tokenization_spaces=True) + end_highlight
+                    translated_answers.append(translated_answer)
+            with st.beta_expander("{}".format(doc['date'])):
                 cols = st.beta_columns(2) if translated_answers else st.beta_columns(1)
                 cols[0].markdown('**Title:** {}'.format(doc['title']))
                 cols[0].markdown('**Journal Text**')

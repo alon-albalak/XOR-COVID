@@ -25,7 +25,6 @@ def translate_COUGH(data_path, save_path, batch_size=1, neg_para_samples=30):
         original_data = [datum for datum in reader]
 
     translated_data = []
-    id = "NA"
     original_data_sorted = {lang: [datum for datum in original_data if datum['language'] == lang] for lang in langs}
     english_data = [datum for datum in original_data if datum['language'] == "en"]
 
@@ -48,10 +47,11 @@ def translate_COUGH(data_path, save_path, batch_size=1, neg_para_samples=30):
             questions = [datum['question'] for datum in english_data[i:i+batch_size]]
             answers = [datum['answers'][0] for datum in english_data[i:i+batch_size]]
             titles = [datum['pos_paras'][0]['title'] for datum in english_data[i:i+batch_size]]
+            ids = [datum['id'] for datum in english_data[i:i + batch_size]]
             translated_answers = model.generate(**tokenizer(answers, truncation=True, padding=True, return_tensors="pt").to(cuda))
             translated_answers = [tokenizer.decode(t, skip_special_tokens=True, clean_up_tokenization_spaces=True) for t in translated_answers]
 
-            for q,a,t,original_answer in zip(questions, translated_answers, titles, answers):
+            for q,a,t,original_answer,id in zip(questions, translated_answers, titles, answers,ids):
                 sample = {
                     "question":q,
                     "answers":[a],
@@ -90,10 +90,11 @@ def translate_COUGH(data_path, save_path, batch_size=1, neg_para_samples=30):
             questions = [datum['question'] for datum in data[i:i+batch_size]]
             answers = [datum['answers'][0] for datum in data[i:i+batch_size]]
             titles = [datum['pos_paras'][0]['title'] for datum in data[i:i+batch_size]]
+            ids = [datum['id'] for datum in english_data[i:i + batch_size]]
             translated_questions = model.generate(**tokenizer(questions, truncation=True, padding=True, return_tensors="pt").to(cuda))
             translated_questions = [tokenizer.decode(t, skip_special_tokens=True, clean_up_tokenization_spaces=True) for t in translated_questions]
 
-            for q,a,t,original_question in zip(translated_questions, answers, titles, questions):
+            for q,a,t,original_question,id in zip(translated_questions, answers, titles, questions,ids):
                 sample = {
                     "question":q,
                     "answers":[a],
