@@ -1,6 +1,6 @@
-# Multi- and Cross-lingual Open-Domain Question Answering for COVID-19 (Phase B)
+# Cross-lingual Open-Domain Question Answering for COVID-19 (Phase B)
 
-This repository contains the source code for an end-to-end open-domain multi-lingual question answering system. The system is made up of two components: a retriever model and a reading comprehension (question answering) model. We provide the code for these two models in addition to demo code based on Streamlit. 
+This repository contains the source code for an end-to-end open-domain cross-lingual question answering system. The system is made up of two components: a retriever model and a reading comprehension (question answering) model. We provide the code for these two models in addition to demo code based on Streamlit. 
 
 
 ## Installation
@@ -10,9 +10,11 @@ Our system uses XLM-RoBERTa, a neural language model that is pretrained on 2.5TB
 
 
 ## Datasets
-- We use the [COUGH](https://github.com/sunlab-osu/covid-faq/) dataset for training our retriever. In addition to the original data, we also include a script to translate some of the data using [MarianMT](https://marian-nmt.github.io/), which translates the answers from english QA pairs into foreign languages, and translates the question from foreign language QA pairs into english. In this way, we create artificial cross-lingual data where the question is in english, but the answer may be in any language.
+- We use the [COUGH](https://github.com/sunlab-osu/covid-faq/) dataset, located in /COUGH, to train our retriever. In addition to the original data, we also include a script to translate some of the data using [MarianMT](https://marian-nmt.github.io/), which translates the answers from english QA pairs into foreign languages, and translates the question from foreign language QA pairs into english. In this way, we create artificial cross-lingual data where the question is in english, but the answer may be in any language. We also present a script, ```parseEn2All.py```, to filter the translated data through the use of the [LaBSE](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html), an existing BERT-based sentence embedding model that encodes 109 languages into the same space. The model is utilized to compare the alignment of translations across different languages. We step through the translated data and calculate similarity scores between translated answers and their original English answers and remove translations that do not meet a threshold and are classified as poor translations.
+
 - We provide the [COVID-QA](https://www.aclweb.org/anthology/2020.nlpcovid19-acl.18.pdf) dataset under the /data directory as well as a script to translate the data using MarianMT machine translation models.
-- Additionally, we use an internal version of the CORD-19 dataset which contains article abstracts in english and other languages. This dataset is found in the /internalCORD directory.
+- Additionally, we use an internal version of the CORD-19 dataset for retrieval that contains article abstracts in english and other languages. 
+
 
 To access the COUGH and COVID-QA datasets, we provide simple scripts to download, pre-process, and translate the data. In order to run machine translation, you will need a GPU. The below scripts will save the COUGH data in the /COUGH directory, and the COVID-QA data in the /multilingual_covidQA directory:
 ```
@@ -21,7 +23,7 @@ bash get_prepare_COUGH.sh $GPU
 bash get_prepare_covidQA.sh $GPU
 ```
 
-We maintain the internal CORD dataset in this repo, it is not available publicly. The dataset is stored in the jsonlines format where each line contains a json object with:
+The internal CORD dataset will need to be stored in the jsonlines format where each line contains a json object with:
   * id: article PMC id
   * title: article title
   * text: article text
@@ -84,7 +86,7 @@ Here are things to keep in mind:
 ```
 
 ### Evaluation
-We evaluate retrieval on the test set from the COUGH dataset. We determine the percentage of questions that have retrieved paragraphs with the correct answer across different top-k settings. To determine whether tha answer is correct, we use a pre-trained multilingual Siamese BERT for fuzzy matching and F1 score. The model we use (paraphrase-multilingual-mpnet-base-v2) is publicly available in the [sentence-transformers package](https://www.sbert.net/docs/pretrained_models.html).
+We evaluate retrieval on the test set from the COUGH dataset. We determine the percentage of questions that have retrieved paragraphs with the correct answer across different top-k settings. To determine whether tha answer is correct, we use a pre-trained multilingual Siamese BERT for fuzzy matching. The model we use (paraphrase-multilingual-mpnet-base-v2) is publicly available in the [sentence-transformers package](https://www.sbert.net/docs/pretrained_models.html).
 
 To evaluate the retrieval model, use:
 ```bash
