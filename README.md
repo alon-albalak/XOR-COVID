@@ -7,13 +7,14 @@ This repository contains the source code for an end-to-end open-domain cross-lin
 To set up the training environment, follow the instructions in requirements_description.txt
 
 Our system uses XLM-RoBERTa, a neural language model that is pretrained on 2.5TB of data in 100 different languages. We use the version found in the 🤗 Transformers library.
+Both the retriever and reading comprehension models and the demo were run on a Linux server with NVIDIA TITAN RTX (24GB GPU RAM). It is recommended to run the following scripts on GPU although the training and evaluation model scripts may be run on CPU.
 
 
 ## Datasets
 - We use the [COUGH](https://github.com/sunlab-osu/covid-faq/) dataset, located in /COUGH, to train our retriever. In addition to the original data, we also include a script to translate some of the data using [MarianMT](https://marian-nmt.github.io/), which translates the answers from english QA pairs into foreign languages, and translates the question from foreign language QA pairs into english. In this way, we create artificial cross-lingual data where the question is in english, but the answer may be in any language. We also present a script, ```parseEn2All.py```, to filter the translated data through the use of the [LaBSE](https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html), an existing BERT-based sentence embedding model that encodes 109 languages into the same space. The model is utilized to compare the alignment of translations across different languages. We step through the translated data and calculate similarity scores between translated answers and their original English answers and remove translations that do not meet a threshold and are classified as poor translations.
 
 - We provide the [COVID-QA](https://www.aclweb.org/anthology/2020.nlpcovid19-acl.18.pdf) dataset under the /data directory as well as a script to translate the data using MarianMT machine translation models.
-- Additionally, we use an internal version of the CORD-19 dataset for retrieval that contains article abstracts in english and other languages. 
+- Additionally, we use an internal version of the CORD-19 dataset for retrieval that contains article abstracts in english and other languages.
 
 
 To access the COUGH and COVID-QA datasets, we provide simple scripts to download, pre-process, and translate the data. In order to run machine translation, you will need a GPU. The below scripts will save the COUGH data in the /COUGH directory, and the COVID-QA data in the /multilingual_covidQA directory:
@@ -31,6 +32,9 @@ The internal CORD dataset will need to be stored in the jsonlines format where e
   * date: article date 
   * journal: journal published
   * authors: author list
+
+This can be done with the convert_peraton_jsons_to_CORD_jsonl function in ```splitInternalCORD.py```.
+ 
 
 ## Dense Retrieval Model
 Now that we have all of our data, we start by training the retrieval model. During training, we use positive and negative paragraphs, positive being paragraphs that contain the answer to a question, and negative ones not. We train on the COUGH dataset (see the Datasets section for more information on COUGH). We have a unified encoder for both questions and text paragraphs that learns to encode questions and associated texts into similar vectors. Afterwards, we use the model to encode the internal CORD-19 corpus. For the retriever, we use the pre-trained XLM-RoBERTa model.
@@ -107,7 +111,7 @@ Here are things to think about:
 ```
 
 ## Reading Comprehension
-We utilize a modified version of HuggingFace's question answering scripts to train and evaluate our reading comprehension model. The modifications allow for the extraction of multiple answer spans per document. For reading comprehension, we use an XLM-RoBERTa model which has been pre-trained on the XQuAD dataset.
+We utilize a modified version of HuggingFace's question answering scripts to train and evaluate our reading comprehension model. The modifications allow for the extraction of multiple answer spans per document. For reading comprehension, we use an XLM-RoBERTa model which has been pre-trained on the [XQuAD](https://arxiv.org/pdf/1910.11856.pdf) dataset. XQuAD is a multilingual question answer dataset composed of 240 paragraphs and 1190 QA pairs which have been translated from English into 10 languages by professional translators.
 
 ### Training
 To train the reading comprehension model, use:
