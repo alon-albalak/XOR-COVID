@@ -1,4 +1,4 @@
-# Cross-lingual Open-Domain Question Answering for COVID-19 (Phase B)
+# Cross-lingual Open-Domain Question Answering for COVID-19
 
 This repository contains the source code for an end-to-end open-domain cross-lingual question answering system. The system is made up of two components: a retriever model and a reading comprehension (question answering) model. We provide the code for these two models in addition to demo code based on Streamlit. The code is issued under MIT license.
 
@@ -156,4 +156,17 @@ Here are things to keep in mind:
 1. retriever_model is the checkpoint file of your trained retriever model.
 2. qa_model is the path to your trained reading comprehension model.
 3. index_path is the path to the encoded corpus embeddings.
+```
+
+#### Citation
+For now, cite [the pre-print](https://arxiv.org/abs/2201.11153)
+```
+@misc{albalak2022addressing,
+      title={Addressing Issues of Cross-Linguality in Open-Retrieval Question Answering Systems For Emergent Domains}, 
+      author={Alon Albalak and Sharon Levy and William Yang Wang},
+      year={2022},
+      eprint={2201.11153},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
