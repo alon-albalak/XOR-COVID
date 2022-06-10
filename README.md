@@ -2,6 +2,7 @@
 
 This repository contains the source code for an end-to-end open-domain cross-lingual question answering system. The system is made up of two components: a retriever model and a reading comprehension (question answering) model. We provide the code for these two models in addition to demo code based on Streamlit. The code is issued under MIT license.
 
+#### [Check out a video demonstration of the full system here](https://youtu.be/HxNPl7shtUY)
 
 ## Installation
 To set up the training environment, follow the instructions in requirements_description.txt
